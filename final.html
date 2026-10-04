@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CBT KOSMIK Matematika Final 2 - Yayasan Al Ishlah</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' }, startup: { typeset: false }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'], },
+                    colors: { primary: { 50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b', } }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: linear-gradient(135deg, #ecfdf5 0%, #e5e7eb 100%); background-attachment: fixed; -webkit-tap-highlight-color: transparent; }
+        * { -webkit-user-select: none; -ms-user-select: none; user-select: none; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .custom-radio input[type="radio"], .custom-check input[type="checkbox"] { position: absolute; opacity: 0; cursor: pointer; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        input[type="number"], input[type="password"] { -webkit-user-select: auto; user-select: auto; }
+        /* Animasi Sync */
+        @keyframes pulse-sync { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+        .syncing { animation: pulse-sync 1s infinite; }
+    </style>
+</head>
+
+<body class="text-gray-800 min-h-screen flex flex-col font-sans selection:bg-primary-200">
+    <header class="bg-white/95 backdrop-blur-md shadow-sm border-b-4 border-primary-700 z-20 sticky top-0">
+        <div class="max-w-7xl mx-auto px-4 py-2 sm:py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 w-3/4 sm:w-auto">
+                <div class="bg-primary-50 p-1 rounded-xl shadow-inner border border-primary-100 flex-shrink-0">
+                    <img src="https://iili.io/CSRcfLB.png" alt="Logo Al Ishlah" class="h-8 sm:h-10 w-auto object-contain">
+                </div>
+                <div class="bg-white p-1 rounded-xl shadow-inner border border-gray-100 flex-shrink-0 hidden sm:block">
+                    <img src="https://iili.io/nuptqxa.png" alt="Logo Kosmik" class="h-8 sm:h-10 w-auto object-contain">
+                </div>
+                <div class="min-w-0">
+                    <h1 class="text-sm sm:text-xl font-extrabold text-primary-900 leading-tight truncate tracking-tight">FINAL KOSMIK</h1>
+                    <p class="text-[10px] sm:text-sm text-gray-500 font-semibold truncate">Matematika - SMA IT Al Ishlah</p>
+                </div>
+            </div>
+            
+            <div id="headerInfo" class="hidden flex-shrink-0 flex items-center space-x-2 sm:space-x-4">
+                <!-- Sync Indicator -->
+                <div id="syncIndicator" class="hidden flex-col items-center mr-2" title="Status Sinkronisasi Real-Time">
+                    <div class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.8)]"></div>
+                    <span class="text-[8px] font-bold text-gray-500 uppercase mt-0.5">Tersimpan</span>
+                </div>
+                
+                <div class="text-right hidden md:block">
+                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Siswa</p>
+                    <p id="studentNameDisplay" class="font-bold text-gray-800 text-sm truncate max-w-[150px]"></p>
+                </div>
+                <div class="bg-gradient-to-r from-primary-700 to-primary-800 text-white px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-xl shadow-lg flex items-center space-x-2 border border-primary-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-primary-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span id="timerDisplay" class="font-mono text-base sm:text-xl font-bold tracking-widest drop-shadow-md">120:00</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col p-3 sm:p-4 md:p-6 w-full max-w-7xl mx-auto relative h-full">
+        <div id="loginView" class="glass p-6 sm:p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white mx-auto my-auto relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary-400 to-primary-700"></div>
+            <div class="text-center mb-8">
+                <div class="flex justify-center items-center gap-4 mb-5">
+                    <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-100"><img src="https://iili.io/CSRcfLB.png" class="h-12 sm:h-16 w-auto object-contain"></div>
+                    <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-100"><img src="https://iili.io/nuptqxa.png" class="h-12 sm:h-16 w-auto object-contain"></div>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-800 tracking-tight">Login Peserta</h2>
+                <p class="text-xs sm:text-sm text-gray-500 mt-1 font-medium">Final KOSMIK Matematika 2026</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs sm:text-sm font-bold mb-1.5 text-gray-700">Pilih Kelas</label>
+                    <select id="classSelect" onchange="populateStudents()" class="w-full bg-gray-50 border-2 border-gray-200 rounded-xl px-4 py-3 text-sm sm:text-base font-medium focus:outline-none focus:border-primary-500 outline-none">
+                        <option value="">-- Pilih Kelas --</option><option value="X">Kelas X</option><option value="XI">Kelas XI</option><option value="XII">Kelas XII</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs sm:text-sm font-bold mb-1.5 text-gray-700">Nama Lengkap</label>
+                    <select id="nameSelect" class="w-full bg-gray-50 border-2 border-gray-200 rounded-xl px-4 py-3 text-sm sm:text-base font-medium focus:outline-none focus:border-primary-500 outline-none disabled:bg-gray-100 disabled:text-gray-400" disabled>
+                        <option value="">-- Pilih Nama --</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs sm:text-sm font-bold mb-1.5 text-gray-700">Kode Akses</label>
+                    <input type="password" id="accessCode" placeholder="Masukkan Kode" class="w-full bg-gray-50 border-2 border-gray-200 rounded-xl px-4 py-3 text-sm sm:text-base font-medium focus:outline-none focus:border-primary-500 outline-none">
+                </div>
+                <button id="btnStart" onclick="startExam()" class="w-full mt-4 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 text-white font-bold py-3.5 rounded-xl shadow-xl shadow-primary-700/30 flex justify-center items-center gap-2 transform active:scale-95 disabled:opacity-70 disabled:scale-100">
+                    <span class="text-sm sm:text-base tracking-wide">MULAI UJIAN</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="quizView" class="hidden w-full flex-col lg:flex-row gap-4 lg:gap-6 flex-grow">
+            <!-- Area Navigasi (Atas di HP, Kiri di Desktop) -->
+            <div class="w-full lg:w-80 flex flex-col gap-4 lg:gap-6 order-2 lg:order-1 lg:h-[calc(100vh-120px)] flex-shrink-0">
+                <div class="bg-white p-4 sm:p-5 rounded-3xl shadow-xl border border-gray-100 flex flex-col">
+                    <h4 class="font-extrabold text-gray-800 mb-3 pb-2 border-b border-gray-100 flex items-center gap-2 text-sm sm:text-base">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
+                        Navigasi Soal
+                    </h4>
+                    <div id="navGrid" class="grid grid-cols-5 sm:grid-cols-10 lg:grid-cols-5 gap-2 overflow-y-auto pr-1 pb-1 max-h-[150px] sm:max-h-[200px] lg:max-h-full">
+                        <!-- Grid navigasi dihasilkan JS -->
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100">
+                        <button onclick="confirmSubmit()" class="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 text-white font-black py-3 rounded-xl shadow-lg shadow-red-500/30 flex justify-center items-center gap-2 transform active:scale-95 text-sm sm:text-base">
+                            SELESAI UJIAN
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-3 sm:p-4 rounded-3xl border border-amber-200 shadow-sm flex items-start gap-3">
+                    <svg class="h-5 w-5 sm:h-6 sm:w-6 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    <div>
+                        <p class="font-extrabold text-amber-900 text-xs sm:text-sm mb-1">Awas Pelanggaran!</p>
+                        <p class="text-[10px] sm:text-xs text-amber-800 font-medium">Buka tab lain = Banned 3 Menit. Ke-5 kali = Diskualifikasi.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Area Konten Soal (Kanan/Bawah) -->
+            <div class="flex-grow flex flex-col bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden min-h-[50vh] lg:h-[calc(100vh-120px)] order-1 lg:order-2">
+                <div class="bg-gray-50 px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100 flex justify-between items-center sticky top-0 z-10">
+                    <div class="bg-primary-100 text-primary-800 font-black px-3 py-1 sm:px-4 sm:py-1.5 rounded-xl text-base sm:text-lg border border-primary-200">
+                        Soal <span id="qNumber">1</span>
+                    </div>
+                    <span id="qTypeLabel" class="text-[10px] sm:text-sm bg-white text-gray-500 font-bold px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg border border-gray-200 shadow-sm">
+                        Tipe
+                    </span>
+                </div>
+                
+                <div class="p-4 sm:p-6 lg:p-8 flex-grow overflow-y-auto" id="scrollArea">
+                    <div id="qText" class="mb-5 sm:mb-8 text-gray-800 font-medium text-sm sm:text-base lg:text-lg leading-relaxed space-y-3"></div>
+                    <div id="optionsContainer" class="space-y-3 sm:space-y-4">
+                        <!-- Opsi jawaban -->
+                    </div>
+                </div>
+
+                <div class="bg-white px-4 py-3 sm:px-5 sm:py-4 border-t border-gray-100 flex justify-between items-center shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.03)] sticky bottom-0 z-10">
+                    <button onclick="prevQuestion()" class="px-4 py-2 sm:px-5 sm:py-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl font-bold text-gray-700 text-sm sm:text-base active:scale-95 transition-transform flex items-center gap-1 sm:gap-2">
+                        <svg class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                        <span>Prev</span>
+                    </button>
+                    <button onclick="nextQuestion()" class="px-5 py-2 sm:px-6 sm:py-2.5 bg-primary-600 hover:bg-primary-700 rounded-xl font-bold text-white text-sm sm:text-base active:scale-95 transition-transform shadow-lg shadow-primary-600/30 flex items-center gap-1 sm:gap-2">
+                        <span>Next</span>
+                        <svg class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="banView" class="hidden glass p-6 sm:p-12 rounded-3xl shadow-2xl w-11/12 max-w-lg mx-auto text-center absolute z-50 border border-white flex-col items-center top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="bg-red-100 p-4 sm:p-5 rounded-full mb-4 sm:mb-6"><svg class="w-12 h-12 sm:w-16 sm:h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg></div>
+            <h2 class="text-xl sm:text-3xl font-black text-gray-900 mb-2">UJIAN DIBEKUKAN</h2>
+            <p class="text-gray-600 mb-4 sm:mb-6 font-medium text-xs sm:text-base">Membuka tab/aplikasi lain dilarang.<br>Pelanggaran ke-<span id="violationCount" class="font-black text-red-600 text-lg mx-1"></span> (Maksimal 5).</p>
+            <div class="bg-white border-2 border-red-100 rounded-2xl w-full py-4 sm:py-6 mb-2 shadow-inner">
+                <p class="text-[10px] sm:text-xs font-bold text-red-800 mb-1 sm:mb-2 uppercase tracking-widest">Penalti Waktu</p>
+                <span id="banTimer" class="text-4xl sm:text-5xl font-black font-mono text-red-600">03:00</span>
+            </div>
+        </div>
+
+        <div id="finishView" class="hidden glass p-6 sm:p-12 rounded-3xl shadow-2xl w-11/12 max-w-md mx-auto text-center border border-white absolute z-50 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="mx-auto bg-green-100 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-4 sm:mb-6"><svg class="h-8 w-8 sm:h-10 sm:w-10 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg></div>
+            <h2 id="finishTitle" class="text-2xl sm:text-3xl font-black text-gray-900 mb-2 sm:mb-3">Ujian Selesai!</h2>
+            <p id="finishMessage" class="text-xs sm:text-sm text-gray-600 font-semibold mb-6">Mengirim finalisasi ke server...</p>
+            <div id="loadingSpinner" class="flex justify-center items-center space-x-2"><div class="w-3 h-3 bg-primary-600 rounded-full animate-bounce"></div><div class="w-3 h-3 bg-primary-600 rounded-full animate-bounce" style="animation-delay: 0.1s"></div><div class="w-3 h-3 bg-primary-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></div></div>
+        </div>
+    </main>
+
+    <script>
+        // MASUKKAN URL GOOGLE APPS SCRIPT YANG BARU DI SINI
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzIEAsbH64Pk-hn8lnGOxOz9cjGdwgbRqUZk0eOhqIr3jL6hiYBHX6AE7J6auV_EXXGMg/exec";
+        const ACCESS_CODE = "kosmik2026";
+        const EXAM_DURATION = 120;
+        const MAX_VIOLATIONS = 5;
+        
+        const studentsData = {
+            "X": ["MOHAMAD SYATHIR ALZAQI LAHATI", "NADHIF ASRAF IQBAL", "ZISTRI AF IDAINI", "ANAYA KALILA AZ-ZAHRA MOHUNE", "ALMAIRAH ZIVANNA SADAT", "MIRZA AIMAN RAHIM", "QUEENZHA OLII", "MUH FATNUN SYAMIL MUSA", "ZHOFIRAH AGNIYAH K. DAUD"],
+            "XI": ["MUHAMMAD JIBRAN NUR SALEH", "A. AISYAH HUMAIRA NURMUHAMMAD", "DIMAS NASIR POTALE", "SHOFIYYAH SHOLIHAH ADAM", "ARAFAH PUTRA IBRAHIM", "ALIF FIRMANSYAH MONOARFA", "MUHAMMAD FAIZ DAKO", "ZUHAIRAH DINIYYAH ATIFAH PAKUDU", "LUTFIAH NUR MAGFIRAH PAKAYA", "ADLINA NUR SABRINA JUSUF", "NURUL ISTIQOMAH R. ALI"],
+            "XII": ["FAIZA ALYA SYAFIRA IDRUS", "NAJMA KAMILAH HAMZAH", "AHYAN KEYSNA JADULHAQ LALIYO", "ZATYAMARDIKA ZAHBANY NUR", "REZKY AL'FAHREZI KASIM", "KHAIRUNNISA SALSABILAH LIHAWA", "WAHID ADRIAN KATILI", "CAESAR JUSUF PRATAMA", "FATHIL ALSAAJID UMAR", "KHALISAH NAJIYAH YUNUS"]
+        };
+
+        const questionsData = [
+            { num: 1, type: 'pg', text: "Menjelang hari raya Idul Adha, sebuah masjid mengumpulkan dana kurban. Pada pekan pertama terkumpul dana sebesar Rp1.000.000,00. Pada pekan kedua terkumpul Rp1.500.000,00, pekan ketiga Rp2.000.000,00, dan seterusnya selalu bertambah konstan membentuk barisan aritmetika. Berapakah total keseluruhan dana kurban yang terkumpul setelah 6 pekan berturut-turut?", options: { A: "Rp12.000.000,00", B: "Rp12.500.000,00", C: "Rp13.000.000,00", D: "Rp13.500.000,00", E: "Rp14.000.000,00" } },
+            { num: 2, type: 'pg', text: "<strong>Stimulus: Arah Kiblat Matahari.</strong><br>Jika sebuah tongkat dipancangkan tegak lurus di atas tanah datar, dan sinar matahari pada saat itu membentuk sudut elevasi sebesar $45^{\\circ}$, perbandingan antara panjang bayangan tongkat di tanah dengan tinggi tongkat yang sebenarnya adalah...", options: { A: "1:2", B: "1:1", C: "$1:\\sqrt{3}$", D: "2:1", E: "$2:1$" } }, // Menyesuaikan opsi E di PDF ada kesalahan ketik 2:1 ganda
+            { num: 3, type: 'pg', text: "<strong>Stimulus: Lomba Panahan Sunnah.</strong><br>Dalam sebuah perlombaan memanah di pondok pesantren, lintasan anak panah dari busur ke target melambung membentuk kurva parabola dengan persamaan ketinggian $h(t) = -2t^2 + 8t + 1$ (dalam meter, $t$ dalam detik). Ketinggian maksimum anak panah tersebut dari permukaan tanah adalah...", options: { A: "7 meter", B: "8 meter", C: "9 meter", D: "10 meter", E: "11 meter" } },
+            { num: 4, type: 'pgk-bs', text: "<strong>Stimulus: Investasi Syariah.</strong><br>Seorang donatur mendepositokan dana wakaf sebesar Rp1.000.000,00 di Koperasi Syariah dengan skema bagi hasil yang diproyeksikan (dianggap setara bunga majemuk) sebesar 10% per tahun. Berdasarkan data tersebut, evaluasi pernyataan berikut:", statements: ["Saldo dana wakaf pada akhir tahun ke-1 adalah Rp1.100.000,00.", "Besar keuntungan (bagi hasil) yang didapat pada tahun ke-2 saja adalah Rp110.000,00.", "Total saldo dana wakaf pada akhir tahun ke-2 adalah Rp1.200.000,00."] },
+            { num: 5, type: 'pgk-bs', text: "Amil zakat mencatat bahwa rata-rata timbangan beras Zakat Fitrah dari 10 orang pertama adalah 2,5 kg (total 25 kg). Kemudian datang rombongan keluarga berisi 5 orang yang membawa total beras 15 kg.", statements: ["Rata-rata zakat fitrah dari rombongan 5 orang tersebut adalah 3,0 kg per orang.", "Total keseluruhan beras zakat yang terkumpul dari 15 orang tersebut adalah 40 kg.", "Rata-rata timbangan beras seluruh warga (15 orang) tepat 2,5 kg."] },
+            { num: 6, type: 'pgk-l1', text: "<strong>Stimulus: Lahan Parkir Masjid Raya.</strong><br>Lahan parkir sebuah masjid memiliki luas maksimum $200\\text{ m}^2$. Area parkir tersebut hanya diperuntukkan bagi mobil (membutuhkan luas $5\\text{ m}^2$) dan bus jamaah (membutuhkan luas $20\\text{ m}^2$). Kapasitas maksimum kendaraan tidak boleh lebih dari 20 unit kendaraan. Jika $x$ adalah banyaknya bus dan $y$ adalah banyaknya mobil, manakah sistem pertidaksamaan dan pernyataan yang benar?", options: { A: "Kendala luas lahan direpresentasikan oleh pertidaksamaan $4x + y \\le 40$.", B: "Kendala kapasitas kendaraan direpresentasikan oleh $x + y \\le 20$.", C: "Lahan parkir dapat memuat tepat 5 bus dan 15 mobil secara bersamaan.", D: "Kendala luas lahan direpresentasikan oleh pertidaksamaan $4x + y \\le 20$." } },
+            { num: 7, type: 'pgk-l1', text: "Dari 3 orang ustaz dan 2 orang remaja masjid (total 5 orang), akan dipilih 2 orang utusan secara acak untuk menghadiri lokakarya. Pernyataan terkait peluang kejadian yang benar adalah...", options: { A: "Peluang terpilihnya 2 orang ustaz seluruhnya adalah $\\frac{3}{10}$.", B: "Peluang terpilihnya 2 orang remaja masjid seluruhnya adalah $\\frac{1}{10}$.", C: "Terdapat total 10 cara yang mungkin untuk memilih ke-2 utusan tersebut.", D: "Peluang terpilihnya 1 ustaz dan 1 remaja masjid adalah $\\frac{5}{10}$." } },
+            { num: 8, type: 'menjodohkan', text: "<strong>Stimulus: Matriks Inventaris.</strong><br>Persediaan buku tajwid dan fiqih di perpustakaan direpresentasikan oleh matriks $P = \\begin{pmatrix} 3 & 1 \\\\ 2 & 2 \\end{pmatrix}$. Jika dioperasikan secara matematis, tentukan pasangannya:", left: ["Nilai determinan dari matriks P", "Elemen baris pertama kolom kedua dari matriks P", "Jumlah dari elemen diagonal utama matriks P (Trace)"], right: { A: "4", B: "1", C: "5", D: "0" } },
+            { num: 9, type: 'isian', text: "Sebuah pesan dakwah disebarkan melalui grup pesan singkat. Pada jam pertama, pesan dikirim oleh 2 orang. Pada jam kedua, masing-masing dari 2 orang tersebut mengirimkan pesan kepada 2 orang baru lainnya (menjadi 4 orang). Jika pola penyebaran berlanjut membentuk barisan geometri, berapakah banyak orang yang menerima pesan tepat pada jam ke-4?" },
+            { num: 10, type: 'isian', text: "Dasar dari kubah utama masjid agung berbentuk lingkaran sempurna. Jika luas area lantai persis di bawah kubah tersebut adalah $154\\text{ m}^2$, berapakah panjang jari-jari kubah tersebut dalam satuan meter? (Asumsikan $\\pi = \\frac{22}{7}$)" },
+            { num: 11, type: 'pg', text: "<strong>Stimulus: Bakteri Lab.</strong><br>Kultur bakteri jenis A mampu melipatgandakan diri menjadi dua kali lipat setiap 2 jam. Jika pada pengamatan awal pukul 08:00 pagi terdapat 10 bakteri, berapakah total populasi bakteri tersebut pada pukul 12:00 di hari yang sama?", options: { A: "20", B: "30", C: "40", D: "50", E: "80" } },
+            { num: 12, type: 'pg', text: "Bentuk yang paling sederhana dari merasionalkan pecahan bentuk akar $\\frac{2}{\\sqrt{3} - 1}$ adalah...", options: { A: "$\\sqrt{3} - 1$", B: "$\\sqrt{3} + 1$", C: "$2(\\sqrt{3} - 1)$", D: "$2\\sqrt{3} + 1$", E: "$3 + \\sqrt{3}$" } },
+            { num: 13, type: 'pg', text: "Sebuah kurva fungsi kuadrat dasar memiliki persamaan $y = x^2$. Jika kurva tersebut ditranslasikan (digeser) oleh matriks pergeseran $T = \\begin{pmatrix} 2 \\\\ 3 \\end{pmatrix}$, maka persamaan bayangan kurva tersebut menjadi...", options: { A: "$y = x^2 - 4x + 7$", B: "$y = x^2 + 4x + 7$", C: "$y = x^2 - 2x + 3$", D: "$y = x^2 + 2x - 3$", E: "$y = x^2 - 4x + 4$" } },
+            { num: 14, type: 'pg', text: "Diketahui fungsi $f(x) = x + 2$ dan fungsi $g(x) = 3x - 1$. Tentukan nilai dari komposisi fungsi $(g \\circ f)(2)$.", options: { A: "7", B: "9", C: "11", D: "13", E: "15" } },
+            { num: 15, type: 'pg', text: "<strong>Stimulus: Regresi Penjualan.</strong><br>Data tren penjualan produk Y dalam ribuan unit berdasarkan biaya iklan X dalam jutaan rupiah menghasilkan garis regresi linear $Y = 2X + 5$. Jika perusahaan menganggarkan biaya iklan sebesar Rp10.000.000,00 $(X=10)$, taksiran unit produk yang akan terjual berdasarkan model regresi tersebut adalah...", options: { A: "15.000 unit", B: "20.000 unit", C: "25.000 unit", D: "30.000 unit", E: "35.000 unit" } },
+            { num: 16, type: 'pgk-bs', text: "Berdasarkan hasil perhitungan analisis data bivariat antara variabel jam belajar ekstra (X) dan nilai ujian matematika (Y), didapatkan koefisien korelasi Pearson $r = 1,0$.", statements: ["Terdapat korelasi positif yang sempurna antara jam belajar dan nilai ujian.", "Pada grafik scatter plot, titik-titik data akan membentuk garis lurus.", "Jika jam belajar meningkat, maka nilai ujian cenderung akan menurun."] },
+            { num: 17, type: 'pgk-bs', text: "Diberikan sebuah matriks persegi ordo 2, yaitu $A = \\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}$.", statements: ["Nilai determinan dari matriks A adalah -2.", "Matriks Transpose $A^T$ memiliki elemen baris kedua kolom pertama bernilai 2.", "Elemen baris kedua kolom pertama dari matriks A asli adalah 4."] },
+            { num: 18, type: 'pgk-bs', text: "Diketahui sebuah fungsi kuadrat $f(x) = x^2 - 4$.", statements: ["Kurva grafik fungsi tersebut memotong sumbu Y di titik (0, -4).", "Kurva grafik tersebut terbuka ke atas karena koefisien $x^2$ positif.", "Kurva grafik fungsi tersebut sama sekali tidak memotong sumbu X."] },
+            { num: 19, type: 'pgk-l1', text: "Persamaan lingkaran $L \\equiv x^2 + y^2 = 25$ memiliki karakteristik sebagai berikut...", options: { A: "Titik pusat lingkaran berada persis di koordinat (0,0).", B: "Panjang jari-jari lingkaran tersebut adalah 5.", C: "Lingkaran tersebut melalui titik koordinat (3, 4).", D: "Jari-jari lingkaran tersebut adalah 25." } },
+            { num: 20, type: 'pgk-l1', text: "Diketahui sudut $\\alpha$ berada di kuadran I (sudut lancip). Jika diberikan nilai perbandingan $\\sin \\alpha = \\frac{3}{5}$, manakah pernyataan trigonometri berikut yang bernilai benar?", options: { A: "Nilai dari $\\cos \\alpha = \\frac{4}{5}$.", B: "Nilai dari $\\tan \\alpha = \\frac{3}{4}$.", C: "Hasil dari $\\sin \\alpha + \\cos \\alpha = \\frac{7}{5}$.", D: "Nilai dari $\\sec \\alpha = \\frac{4}{5}$." } },
+            { num: 21, type: 'menjodohkan', text: "Diberikan fungsi garis lurus dasar $f(x) = x + 2$. Pasangkan transformasi berikut dengan persamaan barunya:", left: ["Digeser 1 satuan ke atas", "Digeser 1 satuan ke kanan", "Dicerminkan terhadap sumbu Y"], right: { A: "$y = x + 3$", B: "$y = x + 1$", C: "$y = -x + 2$", D: "$y = -x - 2$" } },
+            { num: 22, type: 'menjodohkan', text: "Diketahui fungsi aljabar yaitu $f(x) = 2x$. Pasangkan operasi berikut:", left: ["Nilai dari $f(3)$", "Nilai dari invers $f^{-1}(4)$", "Nilai dari $(f \\circ f)(1)$"], right: { A: "6", B: "2", C: "4", D: "1" } },
+            { num: 23, type: 'isian', text: "Data nilai ulangan harian dari 4 orang siswa adalah sebagai berikut: 7, 8, 9, $x$. Jika diketahui nilai rata-rata (mean) ulangan harian keempat siswa tersebut adalah 8, berapakah nilai dari $x$?" },
+            { num: 24, type: 'isian', text: "<strong>Stimulus: Pelunasan Bunga Koperasi.</strong><br>Pak Budi meminjam modal di Koperasi Syariah sebesar Rp100.000,00. Pinjaman tersebut akan dilunasi dengan sistem anuitas. Jika suku bunga yang ditetapkan adalah 2% per bulan, dan cicilan pokok (angsuran) pada bulan pertama adalah Rp10.000,00, berapakah rupiah besaran Anuitas total yang harus dibayarkan Pak Budi pada bulan tersebut?" },
+            { num: 25, type: 'isian', text: "Dua buah dadu bersisi enam yang seimbang dilempar secara bersamaan satu kali di atas meja datar. Ada berapa banyak cara (titik sampel) agar jumlah mata dadu yang muncul dari kedua dadu tersebut adalah tepat 3?" }
+        ];
+
+        const JUMLAH_SOAL = questionsData.length;
+
+        let session = { name: "", rombel: "", startTime: null, answers: {}, violations: 0, banUntil: 0, isFinished: false, disqualified: false };
+        let currentQuestion = 1, timerInterval, banInterval;
+        let isAntiCheatActive = false;
+        let lastRenderedQ = null;
+        
+        let syncTimeout = null;
+
+        window.onload = () => {
+            loadSession();
+            studentsData["X"].sort(); studentsData["XI"].sort(); studentsData["XII"].sort();
+            if (session.isFinished) { finishScreen("Ujian Telah Diselesaikan."); } 
+            else if (session.startTime) { resumeExam(); } 
+            else { document.getElementById('loginView').classList.remove('hidden'); }
+        };
+
+        function populateStudents() {
+            const cls = document.getElementById('classSelect').value;
+            const nameSel = document.getElementById('nameSelect');
+            nameSel.innerHTML = '<option value="">-- Pilih Nama --</option>';
+            if (cls && studentsData[cls]) {
+                studentsData[cls].forEach(n => nameSel.add(new Option(n, n)));
+                nameSel.disabled = false;
+            } else { nameSel.disabled = true; }
+        }
+
+        async function startExam() {
+            const rombel = document.getElementById('classSelect').value;
+            const name = document.getElementById('nameSelect').value;
+            const code = document.getElementById('accessCode').value;
+            const btn = document.getElementById('btnStart');
+
+            if (!rombel || !name) return alert("Pilih Kelas dan Nama!");
+            if (code !== ACCESS_CODE) return alert("Kode Akses Salah!");
+
+            btn.disabled = true; btn.innerHTML = 'Memeriksa Server...';
+            try {
+                let res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'check_user', name: name }) }).then(r=>r.json());
+                if (res.exists && res.finished) {
+                    alert("Akses Ditolak! Anda sudah menyelesaikan ujian ini.");
+                    btn.disabled = false; btn.innerHTML = 'MULAI UJIAN'; return;
+                }
+                session = { name, rombel, startTime: Date.now(), answers: {}, violations: 0, banUntil: 0, isFinished: false, disqualified: false };
+                saveSession(); triggerSync(); resumeExam();
+            } catch (err) {
+                alert("Gagal terhubung ke Server. Cek internet.");
+                btn.disabled = false; btn.innerHTML = 'MULAI UJIAN';
+            }
+        }
+
+        function resumeExam() {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('studentNameDisplay').innerText = session.name;
+            document.getElementById('headerInfo').classList.remove('hidden'); document.getElementById('headerInfo').classList.add('flex');
+            checkBanStatus();
+            setInterval(triggerSync, 15000); 
+        }
+
+        function loadSession() { const s = localStorage.getItem('kosmikMathFinal2'); if(s) session = JSON.parse(s); }
+        function saveSession() { localStorage.setItem('kosmikMathFinal2', JSON.stringify(session)); }
+
+        function initQuiz() {
+            document.getElementById('quizView').classList.remove('hidden'); document.getElementById('quizView').classList.add('flex');
+            buildNavGrid(); renderQuestion(currentQuestion); startMainTimer();
+            setTimeout(() => { isAntiCheatActive = true; }, 3000); 
+        }
+
+        function isAnswered(qNum) {
+            const ans = session.answers[qNum]; const q = questionsData[qNum - 1];
+            if (!ans) return false;
+            if (q.type === 'pg') return !!ans;
+            if (q.type === 'isian') return String(ans).trim().length > 0;
+            if (q.type === 'pgk-l1') return Array.isArray(ans) && ans.length > 0;
+            if (q.type === 'pgk-bs') return Object.keys(ans).length === q.statements.length;
+            if (q.type === 'menjodohkan') return Object.keys(ans).length === q.left.length;
+            return false;
+        }
+
+        function buildNavGrid() {
+            const grid = document.getElementById('navGrid'); grid.innerHTML = '';
+            for (let i = 1; i <= JUMLAH_SOAL; i++) {
+                let btn = document.createElement('button'); btn.id = `navBtn-${i}`;
+                btn.className = `w-full aspect-square flex items-center justify-center rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${isAnswered(i) ? 'bg-primary-600 text-white border-primary-600 shadow-md' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`;
+                btn.innerText = i; btn.onclick = () => renderQuestion(i);
+                grid.appendChild(btn);
+            }
+        }
+
+        function renderQuestion(num) {
+            currentQuestion = num;
+            const q = questionsData[num - 1];
+            document.getElementById('qNumber').innerText = q.num;
+            document.getElementById('qText').innerHTML = q.text;
+            
+            const types = { 'pg': 'Pilihan Ganda', 'pgk-bs': 'Benar/Salah', 'pgk-l1': 'PG Kompleks', 'menjodohkan': 'Menjodohkan', 'isian': 'Isian Singkat' };
+            document.getElementById('qTypeLabel').innerText = types[q.type];
+            
+            const optsCon = document.getElementById('optionsContainer'); optsCon.innerHTML = '';
+            let ans = session.answers[num];
+
+            if (q.type === 'pg') {
+                for (let k in q.options) {
+                    let checked = ans === k;
+                    optsCon.innerHTML += `<label class="custom-radio relative flex p-3 sm:p-4 border-2 rounded-xl sm:rounded-2xl cursor-pointer group ${checked ? 'bg-primary-50 border-primary-500 ring-1 ring-primary-500 text-primary-900 shadow-sm' : 'bg-white border-gray-200 text-gray-600'}"><input type="radio" name="q" value="${k}" ${checked?'checked':''} onchange="saveAns(${num}, '${k}', true)"><div class="flex-shrink-0 flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 mr-3 sm:mr-4 font-bold text-xs sm:text-sm ${checked ? 'border-primary-500 bg-primary-500 text-white' : 'border-gray-300 text-gray-500'}">${k}</div><div class="flex-grow flex items-center text-xs sm:text-sm font-medium pt-0.5">${q.options[k]}</div></label>`;
+                }
+            } else if (q.type === 'pgk-l1') {
+                if(!ans) ans = [];
+                for (let k in q.options) {
+                    let checked = ans.includes(k);
+                    optsCon.innerHTML += `<label class="custom-check relative flex p-3 sm:p-4 border-2 rounded-xl sm:rounded-2xl cursor-pointer group ${checked ? 'bg-primary-50 border-primary-500 ring-1 ring-primary-500 text-primary-900 shadow-sm' : 'bg-white border-gray-200 text-gray-600'}"><input type="checkbox" value="${k}" ${checked?'checked':''} onchange="toggleAns(${num}, '${k}')"><div class="flex-shrink-0 flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-md border-2 mr-3 sm:mr-4 font-bold ${checked ? 'border-primary-500 bg-primary-500 text-white' : 'border-gray-300 text-gray-500'}">${checked ? '✓' : ''}</div><div class="flex-grow flex items-center text-xs sm:text-sm font-medium pt-0.5">${q.options[k]}</div></label>`;
+                }
+            } else if (q.type === 'pgk-bs') {
+                if(!ans) ans = {};
+                let html = `<div class="overflow-x-auto"><table class="w-full text-xs sm:text-sm text-left border border-gray-200 rounded-xl overflow-hidden"><thead class="bg-gray-100 text-gray-700"><tr><th class="p-3 border-r">Pernyataan</th><th class="p-3 w-16 sm:w-20 text-center">Benar</th><th class="p-3 w-16 sm:w-20 text-center">Salah</th></tr></thead><tbody>`;
+                q.statements.forEach((st, i) => {
+                    html += `<tr class="border-b"><td class="p-3 border-r">${st}</td><td class="p-3 text-center"><input type="radio" name="bs_${i}" class="w-4 h-4 cursor-pointer" ${ans[i]==='B'?'checked':''} onchange="setObjAns(${num}, ${i}, 'B')"></td><td class="p-3 text-center"><input type="radio" name="bs_${i}" class="w-4 h-4 cursor-pointer" ${ans[i]==='S'?'checked':''} onchange="setObjAns(${num}, ${i}, 'S')"></td></tr>`;
+                });
+                optsCon.innerHTML = html + `</tbody></table></div>`;
+            } else if (q.type === 'menjodohkan') {
+                if(!ans) ans = {};
+                let html = `<div class="space-y-3 sm:space-y-4">`;
+                q.left.forEach((st, i) => {
+                    html += `<div class="flex flex-col sm:flex-row justify-between bg-white p-3 sm:p-4 border rounded-xl gap-2 sm:gap-4"><div class="text-xs sm:text-sm w-full sm:w-2/3 font-medium">${st}</div><select onchange="setObjAns(${num}, ${i}, this.value)" class="w-full sm:w-1/3 bg-gray-50 border p-2 text-xs sm:text-sm rounded-lg outline-none font-bold"><option value="">-- Pasangkan --</option>`;
+                    for(let k in q.right) html += `<option value="${k}" ${ans[i]===k?'selected':''}>${k}. ${q.right[k]}</option>`;
+                    html += `</select></div>`;
+                });
+                optsCon.innerHTML = html + `</div>`;
+            } else if (q.type === 'isian') {
+                optsCon.innerHTML = `<label class="block text-xs sm:text-sm font-bold mb-2">Jawaban Angka:</label><input type="number" step="any" value="${ans||''}" oninput="saveAns(${num}, this.value)" class="w-full p-3 sm:p-4 bg-gray-50 border-2 rounded-xl text-base sm:text-lg font-bold font-mono outline-none focus:border-primary-500">`;
+            }
+
+            document.querySelectorAll('#navGrid button').forEach(b => b.classList.remove('ring-4', 'ring-primary-200', 'scale-110'));
+            document.getElementById(`navBtn-${num}`).classList.add('ring-4', 'ring-primary-200', 'scale-110');
+            
+            if (lastRenderedQ !== num) {
+                document.getElementById('scrollArea').scrollTop = 0;
+                lastRenderedQ = num;
+            }
+
+            if(window.MathJax) window.MathJax.typesetPromise([document.getElementById('qText'), document.getElementById('optionsContainer')]);
+        }
+
+        function saveAns(num, val, reRender = false) { 
+            session.answers[num] = val; 
+            updateNav(num); 
+            triggerSync(); 
+            if (reRender) renderQuestion(num); 
+        }
+        function toggleAns(num, val) {
+            if(!session.answers[num]) session.answers[num] = [];
+            let arr = session.answers[num];
+            if(arr.includes(val)) arr = arr.filter(i => i !== val); else arr.push(val);
+            session.answers[num] = arr; updateNav(num); triggerSync(); renderQuestion(num);
+        }
+        function setObjAns(num, key, val) {
+            if(!session.answers[num]) session.answers[num] = {};
+            session.answers[num][key] = val; updateNav(num); triggerSync();
+        }
+
+        function updateNav(num) {
+            saveSession();
+            let btn = document.getElementById(`navBtn-${num}`);
+            if(isAnswered(num)) { btn.classList.remove('bg-white','text-gray-500'); btn.classList.add('bg-primary-600','text-white','border-primary-600'); }
+        }
+        function prevQuestion() { if(currentQuestion > 1) renderQuestion(currentQuestion - 1); }
+        function nextQuestion() { if(currentQuestion < JUMLAH_SOAL) renderQuestion(currentQuestion + 1); }
+
+        function triggerSync() {
+            clearTimeout(syncTimeout);
+            document.getElementById('syncIndicator').classList.remove('hidden');
+            document.getElementById('syncIndicator').classList.add('flex', 'syncing');
+            document.getElementById('syncIndicator').querySelector('span').innerText = "Menyinkronkan...";
+            document.getElementById('syncIndicator').querySelector('div').classList.replace('bg-green-500', 'bg-yellow-400');
+
+            syncTimeout = setTimeout(() => { performSync(); }, 1500); 
+        }
+
+        function performSync() {
+            let timeSec = Math.floor((Date.now() - session.startTime)/1000);
+            fetch(GAS_URL, { method: "POST", body: JSON.stringify({ action: 'sync', name: session.name, rombel: session.rombel, answers: session.answers, violations: session.violations, timeSpent: timeSec, isFinished: session.isFinished, disqualified: session.disqualified }) })
+            .then(r => r.json())
+            .then(res => {
+                // BLOK UNBAN DARI ADMIN
+                if (res && res.unbanned) {
+                    session.violations = 0;
+                    session.banUntil = 0;
+                    session.disqualified = false;
+                    session.isFinished = false;
+                    saveSession();
+                    
+                    document.getElementById('banView').classList.add('hidden');
+                    document.getElementById('banView').classList.remove('flex');
+                    document.getElementById('finishView').classList.add('hidden');
+                    
+                    clearInterval(banInterval);
+                    isAntiCheatActive = true;
+                    initQuiz();
+                    
+                    alert("Admin telah menghapus riwayat pelanggaran Anda.\nSilakan lanjutkan ujian dengan tenang.");
+                }
+
+                document.getElementById('syncIndicator').classList.remove('syncing');
+                document.getElementById('syncIndicator').querySelector('span').innerText = "Tersimpan";
+                document.getElementById('syncIndicator').querySelector('div').classList.replace('bg-yellow-400', 'bg-green-500');
+                setTimeout(()=>{ document.getElementById('syncIndicator').classList.add('hidden'); document.getElementById('syncIndicator').classList.remove('flex'); }, 2000);
+            }).catch(e => console.log("Sync delay..."));
+        }
+
+        function startMainTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                let s = Math.floor(((EXAM_DURATION * 60000) - (Date.now() - session.startTime)) / 1000);
+                if (s <= 0) { clearInterval(timerInterval); autoSubmit("Waktu Habis!"); } 
+                else {
+                    document.getElementById('timerDisplay').innerText = `${Math.floor(s/60).toString().padStart(3,'0')}:${(s%60).toString().padStart(2,'0')}`;
+                    if(s < 300) { document.getElementById('timerDisplay').parentElement.classList.replace('from-primary-700', 'from-red-600'); }
+                }
+            }, 1000);
+        }
+
+        document.addEventListener('visibilitychange', () => { if (document.hidden && isAntiCheatActive && !session.isFinished) handleViolation(); });
+        window.addEventListener('blur', () => { if (isAntiCheatActive && !session.isFinished) handleViolation(); });
+
+        function handleViolation() {
+            isAntiCheatActive = false; session.violations++; triggerSync();
+            if (session.violations >= MAX_VIOLATIONS) { session.disqualified = true; autoSubmit("Didiskualifikasi akibat pelanggaran fatal."); return; }
+            session.banUntil = Date.now() + (session.violations * 3 * 60000);
+            saveSession(); checkBanStatus();
+        }
+
+        function checkBanStatus() {
+            if(session.isFinished) return;
+            if(session.banUntil > Date.now()) {
+                document.getElementById('quizView').classList.add('hidden'); document.getElementById('quizView').classList.remove('flex');
+                document.getElementById('banView').classList.remove('hidden'); document.getElementById('banView').classList.add('flex');
+                document.getElementById('violationCount').innerText = session.violations;
+                clearInterval(banInterval);
+                banInterval = setInterval(() => {
+                    let s = Math.floor((session.banUntil - Date.now()) / 1000);
+                    if (s <= 0) { clearInterval(banInterval); document.getElementById('banView').classList.add('hidden'); document.getElementById('banView').classList.remove('flex'); isAntiCheatActive = true; initQuiz(); } 
+                    else document.getElementById('banTimer').innerText = `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
+                }, 1000);
+            } else { initQuiz(); }
+        }
+
+        function confirmSubmit() { if(confirm("Yakin ingin menyelesaikan ujian? Jawaban tidak dapat diubah lagi.")) finishExam(); }
+        function autoSubmit(r) { alert(r); finishExam(); }
+        
+        function finishExam() {
+            isAntiCheatActive = false; session.isFinished = true; saveSession();
+            document.getElementById('quizView').classList.add('hidden'); document.getElementById('quizView').classList.remove('flex');
+            document.getElementById('finishView').classList.remove('hidden');
+            performSync(); 
+            setTimeout(() => { finishScreen("Jawaban Terekam Sempurna."); }, 2000);
+        }
+        function finishScreen(msg) {
+            document.getElementById('quizView').classList.add('hidden'); document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('finishView').classList.remove('hidden');
+            document.getElementById('loadingSpinner').classList.add('hidden');
+            document.getElementById('finishMessage').innerHTML = `<span class="text-primary-600 font-extrabold text-lg block">${msg}</span>Silakan tinggalkan ruangan.`;
+        }
+    </script>
+</body>
+</html>
