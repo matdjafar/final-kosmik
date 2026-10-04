@@ -501,6 +501,19 @@
 
         function confirmSubmit() { if(confirm("Yakin ingin menyelesaikan ujian? Jawaban tidak dapat diubah lagi.")) finishExam(); }
         function autoSubmit(r) { showCustomAlert(r); finishExam(); }
+        
+        function finishExam() {
+            isAntiCheatActive = false; session.isFinished = true; saveSession();
+            document.getElementById('quizView').classList.add('hidden'); document.getElementById('quizView').classList.remove('flex');
+            document.getElementById('finishView').classList.remove('hidden');
+            performSync(); // Final Sync
+            setTimeout(() => { finishScreen("Jawaban Terekam Sempurna."); }, 2000);
+        }
+
+        function finishScreen(msg) {
+            document.getElementById('quizView').classList.add('hidden'); document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('finishView').classList.remove('hidden');
+            document.getElementById('loadingSpinner').classList.add('hidden');
             document.getElementById('finishMessage').innerHTML = `<span class="text-primary-600 font-extrabold text-lg block">${msg}</span>Silakan tinggalkan ruangan.`;
         }
     </script>
