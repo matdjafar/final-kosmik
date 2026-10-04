@@ -186,6 +186,18 @@
             <p id="finishMessage" class="text-xs sm:text-sm text-gray-600 font-semibold mb-6">Mengirim finalisasi ke server...</p>
             <div id="loadingSpinner" class="flex justify-center items-center space-x-2"><div class="w-3 h-3 bg-primary-600 rounded-full animate-bounce"></div><div class="w-3 h-3 bg-primary-600 rounded-full animate-bounce" style="animation-delay: 0.1s"></div><div class="w-3 h-3 bg-primary-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></div></div>
         </div>
+
+        <!-- Pop-up Notifikasi Khusus Internal Web -->
+        <div id="customAlertView" class="hidden glass p-6 sm:p-8 rounded-3xl shadow-2xl w-11/12 max-w-sm mx-auto text-center border border-white absolute z-[100] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="mx-auto bg-green-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
+                <svg class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <h2 class="text-xl font-black text-gray-900 mb-2">Pemberitahuan</h2>
+            <p id="customAlertMessage" class="text-xs sm:text-sm text-gray-600 font-semibold mb-6 whitespace-pre-line"></p>
+            <button onclick="closeCustomAlert()" class="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 text-white font-bold py-3 rounded-xl shadow-lg active:scale-95 transition-transform text-sm">
+                MENGERTI & LANJUTKAN
+            </button>
+        </div>
     </main>
 
     <script>
@@ -428,7 +440,7 @@
                     isAntiCheatActive = true;
                     initQuiz();
                     
-                    alert("Admin telah menghapus riwayat pelanggaran Anda.\nSilakan lanjutkan ujian dengan tenang.");
+                    showCustomAlert("Admin telah menghapus riwayat pelanggaran Anda.\nSilakan lanjutkan ujian dengan tenang.");
                 }
 
                 document.getElementById('syncIndicator').classList.remove('syncing');
@@ -475,20 +487,20 @@
             } else { initQuiz(); }
         }
 
-        function confirmSubmit() { if(confirm("Yakin ingin menyelesaikan ujian? Jawaban tidak dapat diubah lagi.")) finishExam(); }
-        function autoSubmit(r) { alert(r); finishExam(); }
-        
-        function finishExam() {
-            isAntiCheatActive = false; session.isFinished = true; saveSession();
-            document.getElementById('quizView').classList.add('hidden'); document.getElementById('quizView').classList.remove('flex');
-            document.getElementById('finishView').classList.remove('hidden');
-            performSync(); 
-            setTimeout(() => { finishScreen("Jawaban Terekam Sempurna."); }, 2000);
+        // FUNGSI UNTUK MENAMPILKAN POP-UP NOTIFIKASI KHUSUS
+        function showCustomAlert(msg) {
+            document.getElementById('customAlertMessage').innerText = msg;
+            document.getElementById('customAlertView').classList.remove('hidden');
+            document.getElementById('customAlertView').classList.add('flex', 'flex-col');
         }
-        function finishScreen(msg) {
-            document.getElementById('quizView').classList.add('hidden'); document.getElementById('loginView').classList.add('hidden');
-            document.getElementById('finishView').classList.remove('hidden');
-            document.getElementById('loadingSpinner').classList.add('hidden');
+
+        function closeCustomAlert() {
+            document.getElementById('customAlertView').classList.add('hidden');
+            document.getElementById('customAlertView').classList.remove('flex', 'flex-col');
+        }
+
+        function confirmSubmit() { if(confirm("Yakin ingin menyelesaikan ujian? Jawaban tidak dapat diubah lagi.")) finishExam(); }
+        function autoSubmit(r) { showCustomAlert(r); finishExam(); }
             document.getElementById('finishMessage').innerHTML = `<span class="text-primary-600 font-extrabold text-lg block">${msg}</span>Silakan tinggalkan ruangan.`;
         }
     </script>
