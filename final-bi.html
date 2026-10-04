@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CBT KOSMIK Bahasa Indonesia Final - Yayasan Al Ishlah</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'], },
+                    colors: { primary: { 50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b', } }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: linear-gradient(135deg, #ecfdf5 0%, #e5e7eb 100%); background-attachment: fixed; -webkit-tap-highlight-color: transparent; }
+        * { -webkit-user-select: none; -ms-user-select: none; user-select: none; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .custom-radio input[type="radio"], .custom-check input[type="checkbox"] { position: absolute; opacity: 0; cursor: pointer; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        input[type="number"], input[type="password"] { -webkit-user-select: auto; user-select: auto; }
+        /* Animasi Sync */
+        @keyframes pulse-sync { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+        .syncing { animation: pulse-sync 1s infinite; }
+        
+        .puisi { font-family: Georgia, serif; font-style: italic; border-left: 4px solid #34d399; padding-left: 1rem; color: #374151; }
+        .teks-bacaan { background-color: #f9fafb; padding: 1rem; border-radius: 0.75rem; border: 1px solid #e5e7eb; margin-bottom: 1rem; }
+    </style>
+</head>
+
+<body class="text-gray-800 min-h-screen flex flex-col font-sans selection:bg-primary-200">
+    <header class="bg-white/95 backdrop-blur-md shadow-sm border-b-4 border-primary-700 z-20 sticky top-0">
+        <div class="max-w-7xl mx-auto px-4 py-2 sm:py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 w-3/4 sm:w-auto">
+                <div class="bg-primary-50 p-1 rounded-xl shadow-inner border border-primary-100 flex-shrink-0">
+                    <img src="https://iili.io/CSRcfLB.png" alt="Logo Al Ishlah" class="h-8 sm:h-10 w-auto object-contain">
+                </div>
+                <div class="bg-white p-1 rounded-xl shadow-inner border border-gray-100 flex-shrink-0 hidden sm:block">
+                    <img src="https://iili.io/nuptqxa.png" alt="Logo Kosmik" class="h-8 sm:h-10 w-auto object-contain">
+                </div>
+                <div class="min-w-0">
+                    <h1 class="text-sm sm:text-xl font-extrabold text-primary-900 leading-tight truncate tracking-tight">FINAL KOSMIK</h1>
+                    <p class="text-[10px] sm:text-sm text-gray-500 font-semibold truncate">Bahasa Indonesia - SMA IT Al Ishlah</p>
+                </div>
+            </div>
+            
+            <div id="headerInfo" class="hidden flex-shrink-0 flex items-center space-x-2 sm:space-x-4">
+                <!-- Sync Indicator -->
+                <div id="syncIndicator" class="hidden flex-col items-center mr-2" title="Status Sinkronisasi Real-Time">
+                    <div class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.8)]"></div>
+                    <span class="text-[8px] font-bold text-gray-500 uppercase mt-0.5">Tersimpan</span>
+                </div>
+                
+                <div class="text-right hidden md:block">
+                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Siswa</p>
+                    <p id="studentNameDisplay" class="font-bold text-gray-800 text-sm truncate max-w-[150px]"></p>
+                </div>
+                <div class="bg-gradient-to-r from-primary-700 to-primary-800 text-white px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-xl shadow-lg flex items-center space-x-2 border border-primary-900">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 text-primary-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span id="timerDisplay" class="font-mono text-base sm:text-xl font-bold tracking-widest drop-shadow-md">120:00</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col p-3 sm:p-4 md:p-6 w-full max-w-7xl mx-auto relative h-full">
+        <div id="loginView" class="glass p-6 sm:p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white mx-auto my-auto relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary-400 to-primary-700"></div>
+            <div class="text-center mb-8">
+                <div class="flex justify-center items-center gap-4 mb-5">
+                    <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-100"><img src="https://iili.io/CSRcfLB.png" class="h-12 sm:h-16 w-auto object-contain"></div>
+                    <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-100"><img src="https://iili.io/nuptqxa.png" class="h-12 sm:h-16 w-auto object-contain"></div>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-800 tracking-tight">Login Peserta</h2>
+                <p class="text-xs sm:text-sm text-gray-500 mt-1 font-medium">Final KOSMIK Bahasa Indonesia 2026</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs sm:text-sm font-bold mb-1.5 text-gray-700">Pilih Kelas</label>
+                    <select id="classSelect" onchange="populateStudents()" class="w-full bg-gray-50 border-2 border-gray-200 rounded-xl px-4 py-3 text-sm sm:text-base font-medium focus:outline-none focus:border-primary-500 outline-none">
+                        <option value="">-- Pilih Kelas --</option><option value="X">Kelas X</option><option value="XI">Kelas XI</option><option value="XII">Kelas XII</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs sm:text-sm font-bold mb-1.5 text-gray-700">Nama Lengkap</label>
+                    <select id="nameSelect" class="w-full bg-gray-50 border-2 border-gray-200 rounded-xl px-4 py-3 text-sm sm:text-base font-medium focus:outline-none focus:border-primary-500 outline-none disabled:bg-gray-100 disabled:text-gray-400" disabled>
+                        <option value="">-- Pilih Nama --</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs sm:text-sm font-bold mb-1.5 text-gray-700">Kode Akses</label>
+                    <input type="password" id="accessCode" placeholder="Masukkan Kode" class="w-full bg-gray-50 border-2 border-gray-200 rounded-xl px-4 py-3 text-sm sm:text-base font-medium focus:outline-none focus:border-primary-500 outline-none">
+                </div>
+                <button id="btnStart" onclick="startExam()" class="w-full mt-4 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 text-white font-bold py-3.5 rounded-xl shadow-xl shadow-primary-700/30 flex justify-center items-center gap-2 transform active:scale-95 disabled:opacity-70 disabled:scale-100">
+                    <span class="text-sm sm:text-base tracking-wide">MULAI UJIAN</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="quizView" class="hidden w-full flex-col lg:flex-row gap-4 lg:gap-6 flex-grow">
+            <!-- Area Navigasi (Atas di HP, Kiri di Desktop) -->
+            <div class="w-full lg:w-80 flex flex-col gap-4 lg:gap-6 order-2 lg:order-1 lg:h-[calc(100vh-120px)] flex-shrink-0">
+                <div class="bg-white p-4 sm:p-5 rounded-3xl shadow-xl border border-gray-100 flex flex-col">
+                    <h4 class="font-extrabold text-gray-800 mb-3 pb-2 border-b border-gray-100 flex items-center gap-2 text-sm sm:text-base">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
+                        Navigasi Soal
+                    </h4>
+                    <div id="navGrid" class="grid grid-cols-5 sm:grid-cols-10 lg:grid-cols-5 gap-2 overflow-y-auto pr-1 pb-1 max-h-[150px] sm:max-h-[200px] lg:max-h-full">
+                        <!-- Grid navigasi dihasilkan JS -->
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100">
+                        <button onclick="confirmSubmit()" class="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 text-white font-black py-3 rounded-xl shadow-lg shadow-red-500/30 flex justify-center items-center gap-2 transform active:scale-95 text-sm sm:text-base">
+                            SELESAI UJIAN
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-3 sm:p-4 rounded-3xl border border-amber-200 shadow-sm flex items-start gap-3">
+                    <svg class="h-5 w-5 sm:h-6 sm:w-6 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    <div>
+                        <p class="font-extrabold text-amber-900 text-xs sm:text-sm mb-1">Awas Pelanggaran!</p>
+                        <p class="text-[10px] sm:text-xs text-amber-800 font-medium">Buka tab lain = Banned 3 Menit. Ke-5 kali = Diskualifikasi.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Area Konten Soal (Kanan/Bawah) -->
+            <div class="flex-grow flex flex-col bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden min-h-[50vh] lg:h-[calc(100vh-120px)] order-1 lg:order-2">
+                <div class="bg-gray-50 px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100 flex justify-between items-center sticky top-0 z-10">
+                    <div class="bg-primary-100 text-primary-800 font-black px-3 py-1 sm:px-4 sm:py-1.5 rounded-xl text-base sm:text-lg border border-primary-200">
+                        Soal <span id="qNumber">1</span>
+                    </div>
+                    <span id="qTypeLabel" class="text-[10px] sm:text-sm bg-white text-gray-500 font-bold px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg border border-gray-200 shadow-sm">
+                        Tipe
+                    </span>
+                </div>
+                
+                <div class="p-4 sm:p-6 lg:p-8 flex-grow overflow-y-auto" id="scrollArea">
+                    <div id="qText" class="mb-5 sm:mb-8 text-gray-800 font-medium text-sm sm:text-base lg:text-lg leading-relaxed space-y-3"></div>
+                    <div id="optionsContainer" class="space-y-3 sm:space-y-4">
+                        <!-- Opsi jawaban -->
+                    </div>
+                </div>
+
+                <div class="bg-white px-4 py-3 sm:px-5 sm:py-4 border-t border-gray-100 flex justify-between items-center shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.03)] sticky bottom-0 z-10">
+                    <button onclick="prevQuestion()" class="px-4 py-2 sm:px-5 sm:py-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl font-bold text-gray-700 text-sm sm:text-base active:scale-95 transition-transform flex items-center gap-1 sm:gap-2">
+                        <svg class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                        <span>Prev</span>
+                    </button>
+                    <button onclick="nextQuestion()" class="px-5 py-2 sm:px-6 sm:py-2.5 bg-primary-600 hover:bg-primary-700 rounded-xl font-bold text-white text-sm sm:text-base active:scale-95 transition-transform shadow-lg shadow-primary-600/30 flex items-center gap-1 sm:gap-2">
+                        <span>Next</span>
+                        <svg class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="banView" class="hidden glass p-6 sm:p-12 rounded-3xl shadow-2xl w-11/12 max-w-lg mx-auto text-center absolute z-50 border border-white flex-col items-center top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="bg-red-100 p-4 sm:p-5 rounded-full mb-4 sm:mb-6"><svg class="w-12 h-12 sm:w-16 sm:h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg></div>
+            <h2 class="text-xl sm:text-3xl font-black text-gray-900 mb-2">UJIAN DIBEKUKAN</h2>
+            <p class="text-gray-600 mb-4 sm:mb-6 font-medium text-xs sm:text-base">Membuka tab/aplikasi lain dilarang.<br>Pelanggaran ke-<span id="violationCount" class="font-black text-red-600 text-lg mx-1"></span> (Maksimal 5).</p>
+            <div class="bg-white border-2 border-red-100 rounded-2xl w-full py-4 sm:py-6 mb-2 shadow-inner">
+                <p class="text-[10px] sm:text-xs font-bold text-red-800 mb-1 sm:mb-2 uppercase tracking-widest">Penalti Waktu</p>
+                <span id="banTimer" class="text-4xl sm:text-5xl font-black font-mono text-red-600">03:00</span>
+            </div>
+        </div>
+
+        <div id="finishView" class="hidden glass p-6 sm:p-12 rounded-3xl shadow-2xl w-11/12 max-w-md mx-auto text-center border border-white absolute z-50 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="mx-auto bg-green-100 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mb-4 sm:mb-6"><svg class="h-8 w-8 sm:h-10 sm:w-10 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg></div>
+            <h2 id="finishTitle" class="text-2xl sm:text-3xl font-black text-gray-900 mb-2 sm:mb-3">Ujian Selesai!</h2>
+            <p id="finishMessage" class="text-xs sm:text-sm text-gray-600 font-semibold mb-6">Mengirim finalisasi ke server...</p>
+            <div id="loadingSpinner" class="flex justify-center items-center space-x-2"><div class="w-3 h-3 bg-primary-600 rounded-full animate-bounce"></div><div class="w-3 h-3 bg-primary-600 rounded-full animate-bounce" style="animation-delay: 0.1s"></div><div class="w-3 h-3 bg-primary-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></div></div>
+        </div>
+
+        <!-- Pop-up Notifikasi Khusus Internal Web (Tanpa Alert Bawaan) -->
+        <div id="customAlertView" class="hidden glass p-6 sm:p-8 rounded-3xl shadow-2xl w-11/12 max-w-sm mx-auto text-center border border-white absolute z-[100] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div class="mx-auto bg-green-100 w-14 h-14 rounded-full flex items-center justify-center mb-4">
+                <svg class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <h2 class="text-xl font-black text-gray-900 mb-2">Pemberitahuan</h2>
+            <p id="customAlertMessage" class="text-xs sm:text-sm text-gray-600 font-semibold mb-6 whitespace-pre-line"></p>
+            <button onclick="closeCustomAlert()" class="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 text-white font-bold py-3 rounded-xl shadow-lg active:scale-95 transition-transform text-sm">
+                MENGERTI & LANJUTKAN
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // MASUKKAN URL GOOGLE APPS SCRIPT YANG BARU DI SINI
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxNFe7P-SyccxIi1Gf9aM-mlJAtz5bQL-cXSOxQfCK925QYXK_4BxwPNmkxkjtXzoQF/exec";
+        const ACCESS_CODE = "kosmik2026";
+        const EXAM_DURATION = 120;
+        const MAX_VIOLATIONS = 5;
+        
+        const studentsData = {
+            "X": ["ALIF SATRIA PRAYOGA", "ALMAIRAH ZIVANNA SADAT", "ANUGRAH RILAN PRATAMA INAKU", "AZZAM WILDANUM MUKHALLADUN", "MIRZA AIMAN RAHIM", "MUH FATNUN SYAMIL MUSA", "NADHIF ASRAF IQBAL", "RIF'AH KARIMAH BADJA", "ZHOFIRAH AGNIYAH K. DAUD", "ZISTRI AF IDAINI"],
+            "XI": ["A. AISYAH HUMAIRA NURMUHAMMAD", "ADLINA NUR SABRINA JUSUF", "AZDAH AZDKIA MUHIDDIN", "FATHIYYAH NAAILAH ABDULLAH", "LUTFIAH NUR MAGFIRAH PAKAYA", "NAJMAH FADHILAH MUNAWAR", "NURUL ISTIQOMAH R. ALI", "RIZYA CHAMASYA USMAN", "SHOFIYYAH SHOLIHAH ADAM", "ZUHAIRAH DINIYYAH ATIFAH PAKUDU"],
+            "XII": ["AHYAN KEYSNA JADULHAQ LALIYO", "CAESAR JUSUF PRATAMA", "FAIZA ALYA SYAFIRA IDRUS", "KHALISAH NAJIYAH YUNUS", "MOH. ALFIE SYAHRI HUNOWU", "NAJMA KAMILAH HAMZAH", "SYAHID AHSAN AMAL USMAN", "SYAUQY RAIHAN HASAN", "WAHID ADRIAN KATILI", "ZAHRATUL MAIMUNA PAUTINA"]
+        };
+
+        const questionsData = [
+            { 
+                num: 1, type: 'pg', 
+                text: `<div class="teks-bacaan text-sm text-center mb-4"><strong>Cermati ilustrasi gambar di bawah ini!</strong><br><br><img src="aset/gambar1.jpg" onerror="this.src='https://placehold.co/400x300/e2e8f0/64748b?text=Gambar+1+Tidak+Ditemukan'" class="max-w-full sm:max-w-md mx-auto rounded-xl shadow-md border border-gray-200"></div><p>Penggunaan bahan kulit pada jaket banyak efek negatifnya, salah satunya kepunahan satwa liar yang kulitnya dibuat jaket seperti buaya, ikan paus, gajah, dan harimau. Saat ini, ada solusi menarik yakni jaket dari bahan eceng gondok. Bahan mudah didapat, warna lebih variatif, lebih murah, dan ramah terhadap kelestarian alam terutama keberadaan hewan langka.</p><br><strong>Kalimat iklan yang sesuai dengan ilustrasi tersebut adalah...</strong>`, 
+                options: { 
+                    A: "Dijual jaket serba guna dengan bahan kulit hewan langka, murah, berkualitas baik, dan awet.", 
+                    B: "Dijual dengan harga terjangkau, warna senada, dan ramah terhadap kelestarian alam dan pakaianya enak dipakai.", 
+                    C: "Dijual aneka jaket dari bahan ramah kelestarian alam, harga terjangkau, dan pilihan warna beragam.", 
+                    D: "Dijual jaket kulit dari bahan ramah kelestarian alam, harga terjangkau, dan pilihan warna senada.", 
+                    E: "Dijual aneka jaket dari bahan ramah kelestarian alam, harga terjangkau, dan ramah lingkungan." 
+                } 
+            },
+            { 
+                num: 2, type: 'pg', 
+                text: `<div class="teks-bacaan text-sm text-center mb-4"><strong>Cermati poster berikut!</strong><br><br><img src="aset/gambar2.jpg" onerror="this.src='https://placehold.co/400x300/e2e8f0/64748b?text=Gambar+2+Tidak+Ditemukan'" class="max-w-full sm:max-w-md mx-auto rounded-xl shadow-md border border-gray-200"></div><p>Setelah mencermati gambar yang ditampilkan, teks deskripsi yang paling sesuai untuk menggambarkan gambar tersebut adalah ...</p>`, 
+                options: { 
+                    A: "salah satu tempat yang paling indah untuk sedikit mengurani rasa penat setelah seminggu bekerja adalah pegunungan. Pegunungan yang sejuk menawarkan pemandangan alam yang menakjubkan dengan deretan bukit hijau membentang sejauh mata memandang... Kepedulian wisatawan bisa kita lihat dengan mereka membuang sampah yang mereka bawa ketempat sampah yang disediakan.", 
+                    B: "pegunungan adalah salah satu tempat paling indah untuk menghilangkan penat setelah seminggu bekerja. Dengan pemandangan alam yang memukau dan udara sejuk yang menyegarkan, pegunungan menawarkan kedamaian... Mari kita berkontribusi menjaga kelestarian alam dengan membuang sampah di tempat yang disediakan atau membawanya kembali ke rumah.", 
+                    C: "untuk menjaga kebersihan saat berkunjung ke pegunungan, ikuti langkah-langkah berikut. Pertama, pastikan Anda membawa kantong sampah... Kedua, kumpulkan semua sampah... Ketiga, cari tempat sampah yang disediakan di lokasi tersebut.", 
+                    D: "pegunungan Menoreh memiliki ketinggian rata-rata 1.800 meter di atas permukaan laut dan mencakup area seluas 60.000 hektar. Suhu rata-rata harian di kawasan ini berkisar antara 14-20°C, dengan curah hujan tahunan mencapai 2.500 mm... ditemukan peningkatan jumlah sampah sebesar 7%.", 
+                    E: "pegunungan adalah salah satu tempat paling indah untuk menghilangkan penat setelah seminggu bekerja... untuk menjaga kebersihan saat berkunjung ke pegunungan, ikuti langkah-langkah berikut. Pertama, pastikan Anda membawa kantong sampah atau wadah khusus untuk sampah pribadi." 
+                } 
+            },
+            { 
+                num: 3, type: 'pg', 
+                text: `<div class="teks-bacaan"><p class="font-bold mb-2">Bacalah puisi berikut dengan saksama! (Untuk menjawab soal 3-4)</p><div class="puisi"><p class="font-bold mb-1">"Merdeka di Layar Kita"</p><p>Bukan lagi bambu runcing<br>Bukan lagi jerit di medan perang<br>Kemerdekaan kini adalah sayap<br>Di lautan digital yang membentang</p><p class="mt-2">Namun hati-hati, ada badai hoaks<br>Ada jebakan ujaran kebencian<br>Layar gawai berbisik, memecah persatuan<br>Merah putih harus tetap jadi pegangan</p><p class="mt-2">Kemerdekaan adalah ruang untuk bersuara<br>Namun bukan berarti bebas tanpa batas<br>Ada tanggung jawab dalam setiap kata<br>Ada janji pada masa depan yang cerah</p><p class="mt-2">Dengarlah dentuman nada-nada merdeka<br>Dari karya anak bangsa yang berkreasi<br>Itulah suara batin yang takkan pernah mati<br>Teruslah berkarya, merdeka dalam arti sejati</p></div></div><p><strong>Larik bermajas dalam puisi tersebut terdapat pada...</strong></p>`, 
+                options: { A: "bait pertama larik pertama", B: "bait kedua larik kedua", C: "bait ketiga larik kedua", D: "bait keempat larik pertama", E: "bait ketiga larik pertama" } 
+            },
+            { 
+                num: 4, type: 'pg', 
+                text: `<p>Berdasarkan teks puisi <strong>"Merdeka di Layar Kita"</strong> pada nomor sebelumnya, makna dari bait kedua puisi tersebut adalah...</p>`, 
+                options: { 
+                    A: "peringatan agar generasi muda berhati-hati menggunakan media sosial.", 
+                    B: "anjuran untuk menghindari penggunaan media sosial agar persatuan terjaga.", 
+                    C: "kekhawatiran bahwa kemajuan teknologi akan merusak moral bangsa.", 
+                    D: "ajakan untuk mengikuti perkembangan teknologi dengan sedikit batasan.", 
+                    E: "mengajak dan berhati-hati menggunakan media sosial karena merusak moral bangsa." 
+                } 
+            },
+            { 
+                num: 5, type: 'pg', 
+                text: `<div class="teks-bacaan"><p class="font-bold text-center mb-2">Waspada Lonjakan Kasus Demam Berdarah, Warga Diminta Gencarkan PSN</p><p class="text-sm text-justify"><strong>[JAKARTA]</strong> - Dinas Kesehatan (Dinkes) DKI Jakarta mencatat adanya peningkatan signifikan temuan kasus Demam Berdarah Dengue (DBD) di sejumlah wilayah pada awal April ini. Lonjakan ini dipicu oleh tingginya intensitas curah hujan yang menyebabkan banyaknya genangan air sebagai tempat berkembang biak nyamuk <em>Aedes aegypti</em>. Kepala Dinas Kesehatan DKI Jakarta, Ani Ruspitawati, mengatakan bahwa masyarakat perlu meningkatkan kewaspadaan terutama di lingkungan rumah dan sekolah. Berdasarkan data terbaru, tercatat ada ratusan kasus aktif yang tersebar di lima wilayah kota administrasi. "Kami mengimbau warga untuk kembali menggencarkan Pemberantasan Sarang Nyamuk (PSN) dengan skema 3M Plus, yaitu menguras, menutup, dan mendaur ulang barang bekas," ujar Ani saat ditemui di Balai Kota, Selasa (07/04/2026). Selain tindakan mandiri oleh warga, pihak pemerintah daerah juga telah menginstruksikan para kader Juru Pemantau Jentik (Jumantik) untuk melakukan pemeriksaan rutin dari rumah ke rumah...</p></div><p><strong>Ciri kalimat langsung yang benar di bawah ini adalah....</strong></p>`, 
+                options: { 
+                    A: "'kelain tindakan mandiri oleh warga, pihak pemerintah daerah juga telah menginstruksikan para kader Juru Pemantau Jentik (Jumantik) untuk melakukan pemeriksaan rutin dari rumah ke rumah'.", 
+                    B: `"kami mengimbau warga untuk kembali menggencarkan Pemberantasan Sarang Nyamuk (PSN) dengan skema 3M Plus, yaitu menguras, menutup, dan mendaur ulang barang bekas," ujar Ani saat ditemui di Balai Kota, Selasa (07/04/2026)`, 
+                    C: `"kami mengimbau warga untuk kembali menggencarkan Pemberantasan Sarang Nyamuk (PSN) dengan skema 3M Plus, yaitu menguras, menutup, dan mendaur ulang barang bekas,' ujar Ani saat ditemui di Balai Kota, Selasa (07/04/2026).`, 
+                    D: `"selain tindakan mandiri oleh warga, pihak pemerintah daerah juga telah menginstruksikan para kader Juru Pemantau Jentik (Jumantik) untuk melakukan pemeriksaan rutin dari rumah ke rumah'.`, 
+                    E: `'kelain tindakan mandiri oleh warga, pihak pemerintah daerah juga telah menginstruksikan para kader Juru Pemantau Jentik (Jumantik)... dan mendaur ulang barang bekas,' ujar Ani saat ditemui di Balai Kota, Selasa (07/04/2026).` 
+                } 
+            },
+            { 
+                num: 6, type: 'pg', 
+                text: `<div class="teks-bacaan"><p class="font-bold mb-2">Bacalah teks prosedur acak di bawah ini!</p><p class="font-bold text-center mb-2">Cara Membuat Rendang</p><ol class="list-decimal pl-5 text-sm space-y-1"><li>Setelah santan mendidih, masukan perlahan bumbu yang telah dihaluskan ke dalamnya dan sesekali aduk-aduk selama lebih kurang 20-30 menit.</li><li>Setelah anda melihat santan tampak berminyak, berarti ini saatnya memasukkan potongan daging.</li><li>Masak dengan menggunakan api kecil atau sedang hingga santan mengental dan mengering.</li><li>Teruslah masak hingga daging empuk dan matang merata. Aduk-aduk daging agar bagian dasar tidak gosong dan daging tidak gagal.</li><li>Potong-potong daging rendang dengan bentuk dadu atau sesuai selera.</li><li>Jangan memotong daging terlalu kecil agar saat dimasak daging tidak hancur.</li><li>Tuangkan santan ke wajan berukuran besar. Kemudian, masukkan serai, irisan bawang merah, asam, dan daun kunyit.</li><li>Aduk-aduk hingga santan mendidih dan pastikan santan yang dimasak tidak pecah.</li></ol></div><p><strong>Susunan yang tepat prosedur acak tersebut adalah.....</strong></p>`, 
+                options: { A: "5)-6)-7)-8)-1)-2)-3)-4)", B: "5)-6)-8)-7)-1)-2)-3)-4)", C: "5)-7)-6)-2)-1)-8)-3)-4)", D: "5)-7)-8)-1)-6)-2)-3)-4)", E: "5)-6)-2)-7)-1)-8)-3)-4)" } 
+            },
+            { 
+                num: 7, type: 'pg', 
+                text: `Berdasarkan teks prosedur <strong>"Cara Membuat Rendang"</strong> pada soal sebelumnya, tindakan atau aksi yang menonjol saat memasak rendang adalah....`, 
+                options: { A: "menghaluskan bumbu", B: "mengaduk santan", C: "memotong daging", D: "mencicipi masakan", E: "mencicipi bumbu" } 
+            },
+            { 
+                num: 8, type: 'pg', 
+                text: `<div class="teks-bacaan"><p class="font-bold mb-2">Bacalah puisi di bawah ini!</p><div class="puisi"><p class="font-bold mb-1">Budi Pekerti</p><p><strong>Bait 1</strong><br>Barang siapa tidak memegang agama,<br>Sekali-kali tiada boleh dibilangkan nama.</p><p class="mt-2"><strong>Bait 2</strong><br>Barang siapa mengenal yang empat,<br>Maka ia itulah orang yang ma'rifat.</p><p class="mt-2"><strong>Bait 3</strong><br>Apabila terpelihara kuping,<br>Khabar yang jahat tiadalah damping.</p><p class="mt-2"><strong>Bait 4</strong><br>Bersungguh-sungguh engkau memelihara tangan,<br>Daripada segala berat dan ringan.</p></div></div><p>Berdasarkan bait pertama, apa akibatnya jika seseorang tidak memiliki pegangan agama dalam hidupnya...</p>`, 
+                options: { A: "ia akan memiliki banyak pengikut.", B: "ia akan menjadi orang yang sangat terkenal.", C: "namanya tidak dianggap atau dipandang baik.", D: "ia akan hidup dengan penuh kekayaan.", E: "namanya dianggap baik dan dipandang baik." } 
+            },
+            { 
+                num: 9, type: 'pg', 
+                text: `<div class="teks-bacaan"><p class="text-sm italic">Di suatu desa, tinggalah wanita cantik jelita, namanya alisa wajahnya bersinar bagaikan rembulan namun dia tinggal dengan ibu tiri dan adiknya yang sedang sakit. setiap hari ibunya salalu berkata " alisa cuci piring!!, alisa bersihkan dapur !!, alisa... alisa !!"</p></div><p>Kutipan teks cerpen di atas merupakan gaya bahasa ..</p>`, 
+                options: { A: "Majas perbandingan", B: "Majas pertautan", C: "Majas pertentangan", D: "Majas perulangan", E: "Majas eufemisme" } 
+            },
+            { 
+                num: 10, type: 'pgk-l1', 
+                text: `<div class="teks-bacaan"><p class="text-sm text-justify">Sebuah karya ilmiah tidak hanya dinilai dari seberapa penting fenomena yang diteliti, tetapi juga dari bagaimana hasil penelitian tersebut dikomunikasikan kepada pembaca. Oleh karena itu, penggunaan bahasa memegang peranan krusial. Bahasa dalam karya ilmiah haruslah objektif, lugas, dan bebas dari keambiguan. Penulis harus menghindari penggunaan kata-kata kiasan atau gaya bahasa retoris yang bertujuan memancing emosi pembaca. Selain itu, setiap istilah teknis atau akademis yang digunakan harus memiliki standar definisi yang jelas, merujuk pada Pedoman Umum Ejaan Bahasa Indonesia (PUEBI) serta Kamus Besar Bahasa Indonesia (KBBI).</p></div><p>Berdasarkan teks di atas, manakah pernyataan di bawah ini yang menunjukkan kaidah kebahasaan karya ilmiah yang tepat? <strong>(Pilih DUA ATAU LEBIH pernyataan yang benar!)</strong></p>`, 
+                options: { 
+                    A: "Penulis boleh menggunakan majas metafora untuk membuat karya ilmiah terasa lebih menarik dan tidak kaku saat dibaca.", 
+                    B: "Karya tulis ilmiah harus menggunakan makna denotatif sehingga pembaca menangkap informasi sesuai dengan makna yang sebenarnya.", 
+                    C: "Pilihan kata (diksi) dan tata tulis wajib tunduk pada kaidah bahasa baku yang berlaku secara nasional.", 
+                    D: "Kata ganti persona pertama seperti \"aku\" dan \"saya\" sangat disarankan untuk menunjukkan keterlibatan langsung penulis.", 
+                    E: "Bahasa yang digunakan tidak boleh bermakna ganda (ambigu) agar tidak menimbulkan interpretasi yang berbeda-beda." 
+                } 
+            },
+            { 
+                num: 11, type: 'pgk-l1', 
+                text: `<div class="teks-bacaan"><p class="font-bold mb-2">Perhatikan daftar komponen kerangka karya ilmiah berikut!</p><ol class="list-decimal pl-5 text-sm space-y-1"><li>Latar Belakang Masalah</li><li>Kajian Pustaka / Landasan Teori</li><li>Rumusan Masalah</li><li>Tujuan Penelitian</li><li>Kerangka Berpikir dan Hipotesis</li><li>Manfaat Penelitian</li><li>Metode Penelitian</li><li>Daftar Pustaka</li></ol></div><p>Apabila siswa diminta untuk menyusun bagian <strong>BAB II (KAJIAN PUSTAKA/LANDASAN TEORI)</strong> dalam penulisan makalah atau laporan penelitian sederhana, komponen manakah yang secara baku harus dimasukkan ke dalam bab tersebut? <strong>(Pilihlah lebih dari satu jawaban yang benar!)</strong></p>`, 
+                options: { 
+                    A: "1 (Latar Belakang Masalah)", 
+                    B: "2 (Kajian Pustaka / Landasan Teori)", 
+                    C: "3 (Rumusan Masalah)", 
+                    D: "5 (Kerangka Berpikir dan Hipotesis)", 
+                    E: "6 (Manfaat Penelitian dan daftar pustaka)" 
+                } 
+            },
+            { 
+                num: 12, type: 'pgk-bs', 
+                text: `<div class="teks-bacaan"><p class="text-sm text-justify">Penulisan resensi karya sastra, khususnya novel dan kumpulan puisi, membutuhkan ketajaman analisis dari peresensi. Peresensi tidak sekadar memuji atau mencaci, tetapi harus memberikan argumentasi yang logis berdasarkan isi karya. Dalam teks resensi, sering digunakan konjungsi penerang (seperti bahwa, yakni, yaitu) untuk mendefinisikan sesuatu, dan konjungsi penyebaban (seperti karena, sebab) untuk memperkuat alasan. Selain itu, peresensi menggunakan kata-kata bersinonim dan kata-kata bernada evaluatif (penilaian) untuk menegaskan opini subjektif mereka terhadap karya tersebut agar mudah dipahami pembaca.</p></div><p>Berdasarkan teks di atas, tentukan Benar atau Salah pernyataan-pernyataan berikut terkait kaidah kebahasaan dan sifat teks resensi!</p>`, 
+                statements: [
+                    "Kata evaluatif digunakan oleh peresensi sebagai alat kebahasaan untuk menyatakan keunggulan maupun kelemahan suatu karya.", 
+                    "Konjungsi penerang sering digunakan dalam resensi untuk memberikan definisi, rincian, atau penjelasan mengenai unsur di dalam karya.", 
+                    "Peresensi menggunakan konjungsi penyebaban semata-mata untuk mengakhiri paragraf penutup dalam teks resensi.", 
+                    "Teks resensi bersifat subjektif mutlak, sehingga peresensi bebas memberikan opini tanpa perlu menyelaraskannya dengan isi buku."
+                ] 
+            },
+            { 
+                num: 13, type: 'pgk-l1', 
+                text: `<div class="teks-bacaan"><p class="font-bold mb-2">Perhatikan ilustrasi berikut!</p><p class="text-sm text-justify italic">Di kelas XII, guru menugaskan siswa untuk meresensi dua jenis buku yang berbeda. Kelompok pertama meresensi novel "Laskar Pelangi" karya Andrea Hirata, sedangkan kelompok kedua meresensi buku teks "Strategi Cerdas Menguasai UTBK SNBT". Kedua jenis buku ini (fiksi dan nonfiksi) tentu memiliki titik berat penilaian yang berbeda saat diresensi.</p></div><p>Manakah pernyataan di bawah ini yang menunjukkan perbedaan maupun persamaan yang tepat dalam menyusun resensi untuk buku fiksi dan nonfiksi? <strong>(Pilihlah lebih dari satu pernyataan yang benar!)</strong></p>`, 
+                options: { 
+                    A: "Resensi novel fiksi berfokus pada analisis unsur intrinsik (seperti tema, alur, dan penokohan), sedangkan buku nonfiksi berfokus pada kedalaman materi dan keakuratan fakta.", 
+                    B: "Gaya bahasa pada novel cenderung melihat nilai estetika dan diksi pengarang, sedangkan pada buku nonfiksi dinilai dari kejelasan penyampaian informasi dan tingkat kebakuannya.", 
+                    C: "Identitas buku yang dicantumkan pada resensi buku fiksi tidak perlu memuat ketebalan halaman, berbeda dengan buku nonfiksi yang wajib mencantumkannya.", 
+                    D: "Baik resensi buku fiksi maupun nonfiksi, keduanya sama-sama diwajibkan untuk memaparkan keunggulan dan kelemahan buku sebagai bahan pertimbangan pembaca.", 
+                    E: "Resensi buku fiksi dan nonfiksi tidak perlu menyertakan identitas penerbit karena fokus utamanya adalah pada imajinasi pengarang, tapi sangat bergantung pada reputasi penerbit." 
+                } 
+            },
+            { 
+                num: 14, type: 'pg', 
+                text: `<div class="teks-bacaan"><p class="font-bold text-center mb-2">Kutipan Novel "Singgasana dari Saba"</p><p class="text-sm text-justify">Angin sepoi membawa semerbak wewangian gaharu ke dalam balairung istana Baitul Maqdis yang berlapis emas. Di atas singgasana, Raja Sulaiman duduk dengan tenang. Matanya yang tajam menyapu seluruh hadirin—barisan manusia, jin, hingga burung-burung yang menunduk takzim menanti titahnya. Kabar tentang Ratu Balqis yang sedang dalam perjalanan menuju kerajaannya telah tiba.<br><br>"Wahai para pembesar," suara Sulaiman mengalun pelan, namun wibawanya menggema hingga ke sudut pilar pualam. "Siapakah di antara kalian yang sanggup membawa singgasana Ratu Balqis ke hadapanku sebelum mereka datang menyerahkan diri?"<br><br>Sesosok Ifrit dari golongan jin yang bertubuh raksasa melangkah maju, dadanya membusung pongah. "Hamba akan membawanya ke hadapan Paduka sebelum Paduka bangkit dari tempat duduk ini. Sungguh, hamba sangat kuat dan dapat dipercaya!" Sulaiman terdiam. Pandangannya tidak memancarkan kekaguman atas kesombongan Ifrit. Ia beralih menatap Asif bin Barkhiya, seorang penasihat dari golongan manusia yang hatinya disinari ilmu dari Kitabullah.<br><br>Dengan sorot mata teduh, Asif berucap, "Hamba akan membawanya ke hadapan Paduka sebelum mata Paduka berkedip." Belum genap sehelai napas ditarik, singgasana emas berhias zamrud dan rubi dari Saba itu telah berwujud nyata di tengah ruangan. Keheningan menyergap balairung. Melihat keajaiban yang melampaui batas nalar tersebut, Sulaiman tidak lantas berdiri angkuh atau mengklaim hal itu sebagai bukti kehebatannya di mata para prajurit. Ia justru turun dari takhtanya, menundukkan kepala, dan bersimpuh hingga dahinya menyentuh lantai dingin istana. "Ini adalah sebagian dari karunia Tuhanku," bisik Sulaiman dengan suara bergetar, meredam segala kebanggaan duniawi. "Untuk mengujiku... apakah aku termasuk hamba yang bersyukur, atau justru mengingkari nikmat-Nya."</p></div><p>Sudut pandang yang digunakan pengarang dalam kutipan novel tersebut adalah.....</p>`, 
+                options: { A: "Orang pertama pelaku utama", B: "Orang pertama pelaku sampingan", C: "Orang ketiga serba tahu", D: "Orang ketiga pengamat", E: "Campuran" } 
+            },
+            { 
+                num: 15, type: 'pg', 
+                text: `<p>Berdasarkan isi novel pada soal sebelumnya, watak pada tokoh (Nabi Sulaiman) adalah seorang yang <strong>tawaduk</strong>. Makna sifat tawaduk yang tecermin dari tindakan tokoh tersebut adalah...</p>`, 
+                options: { 
+                    A: "Sifat ini bermakna bahwa kedalaman ilmu pengetahuan selalu bekerja dalam kesenyapan. Semua hal yang dilakukan menjadi rahasi dan hanya ia dan Allah swt yang tau.", 
+                    B: "Orang yang benar-benar memiliki kapasitas unggul umumnya membuktikan keahliannya secara langsung melalui hasil kerja yang presisi, bukan sekadar lewat gertakan lisan tapi juga mengejarakan hal yang baik.", 
+                    C: "Sifat ini mengajarkan bahwa puncak kematangan emosional seorang pemimpin terletak pada kesadarannya bahwa segala kekuatan, kecerdasan, dan fasilitas yang dimilikinya murni merupakan ujian spiritual, bukan alasan untuk menindas atau merendahkan pihak lain.", 
+                    D: "Sifat ini bermakna sebagai bentuk kritik bahwa arogansi dan kebanggaan fisik sering kali menjadi kelemahan yang menutupi kenyataan bahwa selalu ada kekuatan rasional atau ilmu yang jauh melebihi kekuatan fisik semata.", 
+                    E: "Reaksinya yang bersimpuh saat melihat keajaiban perpindahan singgasana merepresentasikan pengendalian ego yang sempurna dan mengendalikan emosi yang baik." 
+                } 
+            },
+            { 
+                num: 16, type: 'pgk-bs', 
+                text: `<div class="teks-bacaan"><p class="text-sm text-justify">Pemandangan di lembah itu sungguh indah. Keadaan alam yang elok dan menawan ini membuat siapa saja yang melihat, memandang, atau menatapnya merasa terpukau. Setiap wisatawan yang mengamati dan memperhatikan hamparan bunga liar tersebut pasti akan menyaksikan sebuah lanskap yang cantik serta bagus tiada tara.<br><br>Perasaan senang langsung menyelimuti hati rombongan kami. Suasana batin mendadak berubah menjadi gembira, penuh bahagia, dan dipenuhi sukacita. Warga desa menyambut dengan riang, melangkah begitu cepat, lekas, dan segera menghidangkan jamuan hangat. Tak ada lagi wajah sedih, raut muram, atau tatapan pilu penuh duka akibat kelelahan menempuh perjalanan darat. Siapapun yang pintar, cerdas, pandai, dan cakap dalam menyikapi hidup pasti akan memanfaatkan waktu istirahat ini dengan sebaik-baiknya.</p></div><p>Pilihlah jawaban benar atau salah mengenai kata umum dan kata khusus (sinonim) berikut ini dengan makna yang lebih luas!</p>`, 
+                statements: [
+                    "Menetap = bersarang, tinggal, menghuni", 
+                    "Rajin = menolong, malas, bersih", 
+                    "Memegang = mengelus, mematuhi, menganut", 
+                    "Gelap = kelam, muram, buntu"
+                ] 
+            },
+            { 
+                num: 17, type: 'pgk-bs', 
+                text: `<p>Konjungsi adalah kata tugas atau kata penghubung yang berfungsi untuk menghubungkan dua satuan bahasa, baik itu kata dengan kata, frasa dengan frasa, klausa dengan klausa, maupun kalimat dengan kalimat. Tanpa konjungsi, kalimat-kalimat yang kita buat akan terasa terputus-putus dan tidak enak dibaca (tidak kohesif).</p><p class="mt-2 font-bold">Pilihlah jawaban benar atau salah pada jenis konjungsi antarkalimat di bawah ini.</p>`, 
+                statements: [
+                    "\"Banyak yang mengira harimau itu sedang marah karena mengaum keras. Sebenarnya, ia hanya sedang memanggil kawanannya dari kejauhan.\"", 
+                    "\"Soal ujian matematika tadi sangat sulit. Akan tetapi, Budi tetap optimis bisa mendapatkan nilai yang memuaskan.\"", 
+                    "\"Berolahraga secara rutin dapat meningkatkan kesehatan jantung. Selain itu, tubuh juga akan terasa lebih segar dan tidak mudah lelah.\"", 
+                    "\"Tak ada lagi wajah sedih, raut muram, atau tatapan pilu penuh duka akibat kelelahan menempuh perjalanan darat.\""
+                ] 
+            },
+            { 
+                num: 18, type: 'pgk-bs', 
+                text: `<p>Kata kajian adalah kata yang perlu ditelaah lebih jauh lagi artinya karena tidak bisa langsung dipahami semua orang. Kata kajian digunakan untuk suatu pengkajian atau kepentingan keilmuan. <strong>Pililah jawaban benar atau salah pada contoh kelompok kata kajian di bawah ini!</strong></p>`, 
+                statements: [
+                    "Fasilitas, potensi, kemudahan", 
+                    "Pencemaran, kemampuan, isi", 
+                    "Kadar, interaksi, polusi", 
+                    "Polusi, online, offline"
+                ] 
+            },
+            { 
+                num: 19, type: 'pgk-bs', 
+                text: `<div class="teks-bacaan"><p class="text-sm text-justify">Fenomena belanja online semakin marak, dan salah satu inovasi yang ikut mendorong pertumbuhannya adalah pay later. Fitur "beli sekarang, bayar nanti" ini menawarkan kemudahan bagi konsumen untuk mendapatkan barang atau jasa yang diinginkan tanpa harus langsung mengeluarkan uang tunai. Dengan beberapa kali klik, barang impian sudah bisa sampai di tangan. Kemudahan inilah yang membuat pay later semakin populer. Tidak hanya untuk membeli barang-barang kebutuhan sehari-hari, paylater juga digunakan untuk membeli barang-barang elektronik, fashion, hingga liburan. Pay later memungkinkan konsumen untuk membeli barang yang mungkin tidak bisa dibeli secara tunai. Jika tidak dikelola dengan baik, penggunaan pay later bisa menyebabkan utang yang sulit dilunasi. Pay later bisa memicu perilaku konsumtif yang berlebihan. Penggunaan pay later seringkali dibebani bunga dan biaya tambahan yang bisa membebani keuangan.</p></div><p>Pililah pernyataan benar atau salah pada situasi yang kemungkinan muncul di masyarakat sesuai isí teks tersebut.</p>`, 
+                statements: [
+                    "Fitur \"beli sekarang, bayar nanti\" ini memungkinkan konsumen mendapatkan barang yang diinginkan tanpa harus langsung mengeluarkan uang tunai.", 
+                    "Kemudahan yang ditawarkan pay later dapat memicu perilaku konsumtif berlebihan dan mengakibatkan penumpukan utang yang sulit dilunasi.", 
+                    "Kemudahan penggunaan dan fleksibilitas menjadi daya tarik utama yang membebani keuangan jika tidak dikelola dengan cermat.", 
+                    "Pay later memungkinkan konsumen untuk membeli barang yang mungkin tidak bisa dibeli secara tunai. Jika tidak dikelola dengan baik, penggunaan pay later bisa menyebabkan utang yang sulit dilunasi."
+                ] 
+            },
+            { 
+                num: 20, type: 'pg', 
+                text: `<div class="teks-bacaan"><p class="font-bold text-center mb-2">Hikayat Bayan Budiman</p><p class="text-sm text-justify">Kendatipun burung bayan itu tiada berbuat aniaya, melainkan ia memberi nasihat yang bijaksana dengan hikmat dan kata-kata yang manis. Maka Khojah Maimun pun terhenyaklah hatinya mendengar kata-kata yang teratur rapi itu. Sabda burung bayan: "Wahai tuanku, jikalau tuan hendak pergi berlayar mencari rezeki yang halal, memelihara amanah adalah sebaik-baik perhiasan diri. Janganlah tuan terpedaya oleh kilau emas perak jika diperoleh dengan cara yang diragukan kehalalannya."</p></div><p>Karakteristik sastra Melayu Klasik yang menonjol dalam kutipan hikayat di atas adalah...</p>`, 
+                options: { 
+                    A: "Penggunaan bahasa arkais seperti kendatipun, sabda, dan struktur inversi.", 
+                    B: "Penggunaan latar cerita yang berpusat pada kehidupan masyarakat modern urban.", 
+                    C: "Penulis cerita dicantumkan secara jelas di bagian awal paragraf.", 
+                    D: "Penggunaan seluruh tokoh cerita berupa dewa-dewi mitologi Yunani.", 
+                    E: "Penggunaan melalui pola alur maju-mundur (flashback) yang kompleks." 
+                } 
+            },
+            { 
+                num: 21, type: 'pg', 
+                text: `<p>Berdasarkan kutipan <strong>"Hikayat Bayan Budiman"</strong> pada soal sebelumnya, pesan tersirat dari tuturan burung Bayan terhadap etika profesi pedagang Muslim adalah ...</p>`, 
+                options: { 
+                    A: "Integritas moral dan kehalalan usaha lebih utama daripada sekadar keuntungan finansial.", 
+                    B: "Integritas moral dan pedagang harus menggunakan kelicikan agar tidak ditipu oleh pembeli.", 
+                    C: "Integritas moral dan keberhasilan dagang ditentukan oleh besarnya modal pinjaman dari bank.", 
+                    D: "Integritas moral dan perjalanan jauh tidak perlu dilakukan jika tidak ada jaminan keuntungan instan.", 
+                    E: "Kehalalan usaha lebih utama daripada sekadar keuntungan finansial untuk keberhasilan dagang." 
+                } 
+            },
+            { 
+                num: 22, type: 'pg', 
+                text: `<div class="teks-bacaan"><p class="font-bold mb-2">Perhatikan draf bagian surat lamaran pekerjaan berikut!</p><p class="text-sm font-mono whitespace-pre-line">Gorontalo, 12 September 2026
+Hal: Lamaran Pekerjaan
+Lampiran: Enam Lembar
+
+Yth. Manajer HRD PT Brantas Adya Surya Energi
+Jalan Sultan Botutihe No. 45, Kota Gorontalo
+
+Dengan hormat,
+Berdasarkan informasi lowongan pekerjaan yang saya dapatkan pada harian Gorontalo Post tanggal 10 September 2026, perusahaan Bapak/Ibu membutuhkan tenaga Staf Administrasi Operational. Saya yang bertanda tangan di bawah ini:
+nama: Rahmat Husain, S.T.
+tempat, tanggal lahir: Gorontalo, 14 Mei 1998
+pendidikan terakhir: S-1 Teknik Industri
+alamat: Jl. Nani Wartabone No. 12, Gorontalo</p></div><p>Penulisan rincian data diri (nama, tempat tanggal lahir, pendidikan terakhir, alamat) pada surat lamaran pekerjaan di atas menggunakan huruf kecil di awal kata karena ...</p>`, 
+                options: { 
+                    A: "Merupakan kesalahan cetak yang harus diperbaiki menjadi huruf kapital dan struktur dari surat.", 
+                    B: "Rincian tersebut merupakan kelanjutan dari kalimat sebelumnya yang diakhiri tanda titik dua.", 
+                    C: "Diatur khusus agar muat dalam satu halaman surat dan fungsinya untuk rincian struktur.", 
+                    D: "Rincian tersebut mengikuti aturan penulisan nama dalam struktur surat serta memperbaiki huruf kapital.", 
+                    E: "Merupakan kesalahan tulis yang harus diperbaiki menjadi huruf kapital dan struktur dari surat." 
+                } 
+            },
+            { 
+                num: 23, type: 'pg', 
+                text: `<p>Merujuk pada draf surat lamaran pekerjaan pada soal sebelumnya, apabila penulisan alamat tujuan surat di atas ingin disesuaikan dengan aturan PUEBI/EYD terbaru yang baku, kesalahan penulisan yang terdapat pada bagian alamat tujuan surat adalah..</p>`, 
+                options: { 
+                    A: "Penggunaan kata Yth. seharusnya tidak disingkat dan menggunakan kepada.", 
+                    B: "Penulisan jalan tidak boleh disingkat menjadi Jl. jika tidak diikuti nomor.", 
+                    C: "Penggunaan kata Kepada sebelum kata Yth. seharusnya ditambahkan.", 
+                    D: "Tidak menggunakan kata Kepada dan menggunakan Yth. yang diikuti titik.", 
+                    E: "Alamat tujuan pada draf di atas sudah memenuhi kriteria baku." 
+                } 
+            },
+            { 
+                num: 24, type: 'menjodohkan', 
+                text: `<div class="teks-bacaan"><p class="font-bold mb-2">Bacalah kutipan teks drama berikut dengan saksama!</p><p class="text-sm italic text-gray-600 mb-2">(Di ruang tengah yang remang-remang, Pak Darmo duduk memegang secangkir kopi yang mulai dingin. Wajahnya tegang. Satria, anak laki-lakinya, masuk membawa tas ransel besar di punggungnya.)</p><p class="text-sm"><strong>Pak Darmo:</strong> <em>(Berdiri kasar sambil menunjuk tas)</em> Mau ke mana kamu malam-malam begini?<br><strong>Satria:</strong> <em>(Menunduk, suaranya pelan tapi tegas)</em> Satria harus pergi, Pak. Beasiswa seni di ibukota itu impian Satria. Bapak tidak bisa terus memaksa Satria memimpin pabrik kayu itu.<br><strong>Pak Darmo:</strong> <em>(Mendengus keras, nadanya meninggi)</em> Seni? Apa seni bisa menghidupi keluarga? Kamu itu penerus tunggal keluarga ini, Satria!<br><strong>Satria:</strong> <em>(Menatap tajam ayahnya)</em> Tapi ini bukan hidup yang Satria inginkan! Uang bukan segalanya. <em>(Bergegas keluar membanting pintu)</em></p></div><p>Pasangkanlah pernyataan pada Kolom A (Unsur/Analisis Teks) dengan pilihan jawaban yang paling tepat pada Kolom B (Kutipan/Bukti Tekstual)!</p>`, 
+                left: [
+                    "Petunjuk laku (Kramagung) yang menggambarkan sikap dan intonasi tokoh.", 
+                    "Kutipan dialog (Wawancang) yang menunjukkan pendirian keras tokoh protagonis.", 
+                    "Latar tempat terjadinya adegan tersebut.",
+                    "Suasana dominan yang terbangun sepanjang adegan berlangsung.",
+                    "Inti konflik eksternal yang terjadi dalam penggalan naskah drama di atas."
+                ], 
+                right: { 
+                    A: "Perselisihan antara orang tua dan anak mengenai pilihan jalan hidup dan masa depan.", 
+                    B: "Di ruang tengah yang remang-remang.", 
+                    C: "\"Tapi ini bukan hidup yang Satria inginkan!\"", 
+                    D: "(Menunduk, suaranya pelan tapi tegas)",
+                    E: "Tegang, kaku, dan penuh amarah.",
+                    F: "\"Seni? Apa seni bisa menghidupi keluarga?\"",
+                    G: "Sunyi, sedih, dan penuh penyesalan."
+                } 
+            },
+            { 
+                num: 25, type: 'menjodohkan', 
+                text: `<div class="teks-bacaan"><p class="text-sm text-justify">Dr. (H.C.) Drs. H. Mohammad Hatta, atau yang akrab disapa Bung Hatta, lahir di Bukittinggi, Sumatra Barat, pada 12 Agustus 1902. Beliau dikenal luas sebagai Bapak Koperasi Indonesia sekaligus Proklamator Kemerdekaan bersama Ir. Soekarno. Sejak muda, pemikiran kritis Hatta telah terbentuk; ia aktif dalam pergerakan nasional, salah satunya memimpin organisasi Perhimpunan Indonesia di Belanda.<br><br>Akibat tulisan-tulisannya yang tajam menentang pemerintah kolonial, Belanda mengasingkan beliau ke kamp konsentrasi Boven Digoel di Papua, lalu dipindahkan ke Banda Neira. Uniknya, saat diasingkan, Hatta membawa serta belasan peti berisi buku. Di sana, beliau tetap produktif membaca, menulis, dan mengajar anak-anak setempat. Hingga akhir hayatnya, kesederhanaan, kedisiplinan waktu yang ketat, serta kejujuran Bung Hatta terus dikenang sebagai warisan moral yang tak ternilai bagi generasi penerus bangsa.</p></div><p>Pasangkanlah pernyataan pada Kolom A (Unsur Teks Biografi) dengan pilihan jawaban yang paling tepat pada Kolom B (Kutipan/Bukti pada Teks)!</p>`, 
+                left: [
+                    "Struktur teks bagian Orientasi yang memuat informasi pengenalan latar belakang tokoh.", 
+                    "Struktur teks bagian Peristiwa Penting (Masalah/Konflik) yang dialami oleh tokoh.", 
+                    "Struktur teks bagian Reorientasi yang berisi pandangan evaluatif atau simpulan penulis terhadap tokoh.",
+                    "Nilai keteladanan yang patut dicontoh dan diaplikasikan dalam kehidupan sehari-hari dari sosok tersebut.",
+                    "Penggunaan kaidah kebahasaan berupa kata kerja material (tindakan fisik/nyata)."
+                ], 
+                right: { 
+                    A: "\"Hingga akhir hayatnya, kesederhanaan, kedisiplinan waktu yang ketat, serta kejujuran Bung Hatta terus dikenang...\"", 
+                    B: "Belanda mengasingkan beliau ke kamp konsentrasi Boven Digoel di Papua.", 
+                    C: "\"Dr. (H.C.) Drs. H. Mohammad Hatta... lahir di Bukittinggi, Sumatra Barat, pada 12 Agustus 1902.\"", 
+                    D: "Kesederhanaan, kedisiplinan waktu, gemar membaca, dan kejujuran.",
+                    E: "Membaca, menulis, dan mengajar.",
+                    F: "Ia aktif dalam pergerakan nasional memimpin organisasi Perhimpunan Indonesia.",
+                    G: "Sunyi, sedih, dan penuh penyesalan."
+                } 
+            }
+        ];
+
+        const JUMLAH_SOAL = questionsData.length;
+
+        let session = { name: "", rombel: "", startTime: null, answers: {}, violations: 0, banUntil: 0, isFinished: false, disqualified: false };
+        let currentQuestion = 1, timerInterval, banInterval;
+        let isAntiCheatActive = false;
+        let lastRenderedQ = null;
+        let syncTimeout = null;
+
+        window.onload = () => {
+            loadSession();
+            studentsData["X"].sort(); studentsData["XI"].sort(); studentsData["XII"].sort();
+            if (session.isFinished) { finishScreen("Ujian Telah Diselesaikan."); } 
+            else if (session.startTime) { resumeExam(); } 
+            else { document.getElementById('loginView').classList.remove('hidden'); }
+        };
+
+        function populateStudents() {
+            const cls = document.getElementById('classSelect').value;
+            const nameSel = document.getElementById('nameSelect');
+            nameSel.innerHTML = '<option value="">-- Pilih Nama --</option>';
+            if (cls && studentsData[cls]) {
+                studentsData[cls].forEach(n => nameSel.add(new Option(n, n)));
+                nameSel.disabled = false;
+            } else { nameSel.disabled = true; }
+        }
+
+        async function startExam() {
+            const rombel = document.getElementById('classSelect').value;
+            const name = document.getElementById('nameSelect').value;
+            const code = document.getElementById('accessCode').value;
+            const btn = document.getElementById('btnStart');
+
+            if (!rombel || !name) return showCustomAlert("Pilih Kelas dan Nama!");
+            if (code !== ACCESS_CODE) return showCustomAlert("Kode Akses Salah!");
+
+            btn.disabled = true; btn.innerHTML = 'Memeriksa Server...';
+            try {
+                let res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: 'check_user', name: name }) }).then(r=>r.json());
+                if (res.exists && res.finished) {
+                    showCustomAlert("Akses Ditolak! Anda sudah menyelesaikan ujian ini.");
+                    btn.disabled = false; btn.innerHTML = 'MULAI UJIAN'; return;
+                }
+                session = { name, rombel, startTime: Date.now(), answers: {}, violations: 0, banUntil: 0, isFinished: false, disqualified: false };
+                saveSession(); triggerSync(); resumeExam();
+            } catch (err) {
+                showCustomAlert("Gagal terhubung ke Server. Cek internet atau URL App Script.");
+                btn.disabled = false; btn.innerHTML = 'MULAI UJIAN';
+            }
+        }
+
+        function resumeExam() {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('studentNameDisplay').innerText = session.name;
+            document.getElementById('headerInfo').classList.remove('hidden'); document.getElementById('headerInfo').classList.add('flex');
+            checkBanStatus();
+            setInterval(triggerSync, 15000); 
+        }
+
+        function loadSession() { const s = localStorage.getItem('kosmikBIndoFinal'); if(s) session = JSON.parse(s); }
+        function saveSession() { localStorage.setItem('kosmikBIndoFinal', JSON.stringify(session)); }
+
+        function initQuiz() {
+            document.getElementById('quizView').classList.remove('hidden'); document.getElementById('quizView').classList.add('flex');
+            buildNavGrid(); renderQuestion(currentQuestion); startMainTimer();
+            setTimeout(() => { isAntiCheatActive = true; }, 3000); 
+        }
+
+        function isAnswered(qNum) {
+            const ans = session.answers[qNum]; const q = questionsData[qNum - 1];
+            if (!ans) return false;
+            if (q.type === 'pg') return !!ans;
+            if (q.type === 'isian') return String(ans).trim().length > 0;
+            if (q.type === 'pgk-l1') return Array.isArray(ans) && ans.length > 0;
+            if (q.type === 'pgk-bs') return Object.keys(ans).length === q.statements.length;
+            if (q.type === 'menjodohkan') return Object.keys(ans).length === q.left.length;
+            return false;
+        }
+
+        function buildNavGrid() {
+            const grid = document.getElementById('navGrid'); grid.innerHTML = '';
+            for (let i = 1; i <= JUMLAH_SOAL; i++) {
+                let btn = document.createElement('button'); btn.id = `navBtn-${i}`;
+                btn.className = `w-full aspect-square flex items-center justify-center rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${isAnswered(i) ? 'bg-primary-600 text-white border-primary-600 shadow-md' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`;
+                btn.innerText = i; btn.onclick = () => renderQuestion(i);
+                grid.appendChild(btn);
+            }
+        }
+
+        function renderQuestion(num) {
+            currentQuestion = num;
+            const q = questionsData[num - 1];
+            document.getElementById('qNumber').innerText = q.num;
+            document.getElementById('qText').innerHTML = q.text;
+            
+            const types = { 'pg': 'Pilihan Ganda', 'pgk-bs': 'Benar/Salah', 'pgk-l1': 'PG Kompleks', 'menjodohkan': 'Menjodohkan', 'isian': 'Isian Singkat' };
+            document.getElementById('qTypeLabel').innerText = types[q.type];
+            
+            const optsCon = document.getElementById('optionsContainer'); optsCon.innerHTML = '';
+            let ans = session.answers[num];
+
+            if (q.type === 'pg') {
+                for (let k in q.options) {
+                    let checked = ans === k;
+                    optsCon.innerHTML += `<label class="custom-radio relative flex p-3 sm:p-4 border-2 rounded-xl sm:rounded-2xl cursor-pointer group ${checked ? 'bg-primary-50 border-primary-500 ring-1 ring-primary-500 text-primary-900 shadow-sm' : 'bg-white border-gray-200 text-gray-600'}"><input type="radio" name="q" value="${k}" ${checked?'checked':''} onchange="saveAns(${num}, '${k}', true)"><div class="flex-shrink-0 flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 mr-3 sm:mr-4 font-bold text-xs sm:text-sm ${checked ? 'border-primary-500 bg-primary-500 text-white' : 'border-gray-300 text-gray-500'}">${k}</div><div class="flex-grow flex items-center text-xs sm:text-sm font-medium pt-0.5">${q.options[k]}</div></label>`;
+                }
+            } else if (q.type === 'pgk-l1') {
+                if(!ans) ans = [];
+                for (let k in q.options) {
+                    let checked = ans.includes(k);
+                    optsCon.innerHTML += `<label class="custom-check relative flex p-3 sm:p-4 border-2 rounded-xl sm:rounded-2xl cursor-pointer group ${checked ? 'bg-primary-50 border-primary-500 ring-1 ring-primary-500 text-primary-900 shadow-sm' : 'bg-white border-gray-200 text-gray-600'}"><input type="checkbox" value="${k}" ${checked?'checked':''} onchange="toggleAns(${num}, '${k}')"><div class="flex-shrink-0 flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-md border-2 mr-3 sm:mr-4 font-bold ${checked ? 'border-primary-500 bg-primary-500 text-white' : 'border-gray-300 text-gray-500'}">${checked ? '✓' : ''}</div><div class="flex-grow flex items-center text-xs sm:text-sm font-medium pt-0.5">${q.options[k]}</div></label>`;
+                }
+            } else if (q.type === 'pgk-bs') {
+                if(!ans) ans = {};
+                let html = `<div class="overflow-x-auto"><table class="w-full text-xs sm:text-sm text-left border border-gray-200 rounded-xl overflow-hidden"><thead class="bg-gray-100 text-gray-700"><tr><th class="p-3 border-r">Pernyataan</th><th class="p-3 w-16 sm:w-20 text-center">Benar</th><th class="p-3 w-16 sm:w-20 text-center">Salah</th></tr></thead><tbody>`;
+                q.statements.forEach((st, i) => {
+                    html += `<tr class="border-b"><td class="p-3 border-r">${st}</td><td class="p-3 text-center"><input type="radio" name="bs_${i}" class="w-4 h-4 cursor-pointer" ${ans[i]==='B'?'checked':''} onchange="setObjAns(${num}, ${i}, 'B')"></td><td class="p-3 text-center"><input type="radio" name="bs_${i}" class="w-4 h-4 cursor-pointer" ${ans[i]==='S'?'checked':''} onchange="setObjAns(${num}, ${i}, 'S')"></td></tr>`;
+                });
+                optsCon.innerHTML = html + `</tbody></table></div>`;
+            } else if (q.type === 'menjodohkan') {
+                if(!ans) ans = {};
+                let html = `<div class="space-y-3 sm:space-y-4">`;
+                q.left.forEach((st, i) => {
+                    html += `<div class="flex flex-col sm:flex-row justify-between bg-white p-3 sm:p-4 border rounded-xl gap-2 sm:gap-4"><div class="text-xs sm:text-sm w-full sm:w-2/3 font-medium">${st}</div><select onchange="setObjAns(${num}, ${i}, this.value)" class="w-full sm:w-1/3 bg-gray-50 border p-2 text-xs sm:text-sm rounded-lg outline-none font-bold"><option value="">-- Pasangkan --</option>`;
+                    for(let k in q.right) html += `<option value="${k}" ${ans[i]===k?'selected':''}>${k}. ${q.right[k]}</option>`;
+                    html += `</select></div>`;
+                });
+                optsCon.innerHTML = html + `</div>`;
+            }
+
+            document.querySelectorAll('#navGrid button').forEach(b => b.classList.remove('ring-4', 'ring-primary-200', 'scale-110'));
+            document.getElementById(`navBtn-${num}`).classList.add('ring-4', 'ring-primary-200', 'scale-110');
+            
+            if (lastRenderedQ !== num) {
+                document.getElementById('scrollArea').scrollTop = 0;
+                lastRenderedQ = num;
+            }
+
+            if(window.MathJax) window.MathJax.typesetPromise([document.getElementById('qText'), document.getElementById('optionsContainer')]);
+        }
+
+        function saveAns(num, val, reRender = false) { 
+            session.answers[num] = val; 
+            updateNav(num); 
+            triggerSync(); 
+            if (reRender) renderQuestion(num); 
+        }
+        function toggleAns(num, val) {
+            if(!session.answers[num]) session.answers[num] = [];
+            let arr = session.answers[num];
+            if(arr.includes(val)) arr = arr.filter(i => i !== val); else arr.push(val);
+            session.answers[num] = arr; updateNav(num); triggerSync(); renderQuestion(num);
+        }
+        function setObjAns(num, key, val) {
+            if(!session.answers[num]) session.answers[num] = {};
+            session.answers[num][key] = val; updateNav(num); triggerSync();
+        }
+
+        function updateNav(num) {
+            saveSession();
+            let btn = document.getElementById(`navBtn-${num}`);
+            if(isAnswered(num)) { btn.classList.remove('bg-white','text-gray-500'); btn.classList.add('bg-primary-600','text-white','border-primary-600'); }
+        }
+        function prevQuestion() { if(currentQuestion > 1) renderQuestion(currentQuestion - 1); }
+        function nextQuestion() { if(currentQuestion < JUMLAH_SOAL) renderQuestion(currentQuestion + 1); }
+
+        function triggerSync() {
+            clearTimeout(syncTimeout);
+            document.getElementById('syncIndicator').classList.remove('hidden');
+            document.getElementById('syncIndicator').classList.add('flex', 'syncing');
+            document.getElementById('syncIndicator').querySelector('span').innerText = "Menyinkronkan...";
+            document.getElementById('syncIndicator').querySelector('div').classList.replace('bg-green-500', 'bg-yellow-400');
+
+            syncTimeout = setTimeout(() => { performSync(); }, 1500); 
+        }
+
+        function performSync() {
+            let timeSec = Math.floor((Date.now() - session.startTime)/1000);
+            fetch(GAS_URL, { method: "POST", body: JSON.stringify({ action: 'sync', name: session.name, rombel: session.rombel, answers: session.answers, violations: session.violations, timeSpent: timeSec, isFinished: session.isFinished, disqualified: session.disqualified }) })
+            .then(r => r.json())
+            .then(res => {
+                if (res && res.unbanned) {
+                    session.violations = 0;
+                    session.banUntil = 0;
+                    session.disqualified = false;
+                    session.isFinished = false;
+                    saveSession();
+                    
+                    document.getElementById('banView').classList.add('hidden');
+                    document.getElementById('banView').classList.remove('flex');
+                    document.getElementById('finishView').classList.add('hidden');
+                    
+                    clearInterval(banInterval);
+                    isAntiCheatActive = true;
+                    initQuiz();
+                    
+                    showCustomAlert("Admin telah menghapus riwayat pelanggaran Anda.\nSilakan lanjutkan ujian dengan tenang.");
+                }
+
+                document.getElementById('syncIndicator').classList.remove('syncing');
+                document.getElementById('syncIndicator').querySelector('span').innerText = "Tersimpan";
+                document.getElementById('syncIndicator').querySelector('div').classList.replace('bg-yellow-400', 'bg-green-500');
+                setTimeout(()=>{ document.getElementById('syncIndicator').classList.add('hidden'); document.getElementById('syncIndicator').classList.remove('flex'); }, 2000);
+            }).catch(e => console.log("Sync delay..."));
+        }
+
+        function startMainTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                let s = Math.floor(((EXAM_DURATION * 60000) - (Date.now() - session.startTime)) / 1000);
+                if (s <= 0) { clearInterval(timerInterval); handleTimeUp(); } 
+                else {
+                    document.getElementById('timerDisplay').innerText = `${Math.floor(s/60).toString().padStart(3,'0')}:${(s%60).toString().padStart(2,'0')}`;
+                    if(s < 300) { document.getElementById('timerDisplay').parentElement.classList.replace('from-primary-700', 'from-red-600'); }
+                }
+            }, 1000);
+        }
+
+        document.addEventListener('visibilitychange', () => { if (document.hidden && isAntiCheatActive && !session.isFinished) handleViolation(); });
+        window.addEventListener('blur', () => { if (isAntiCheatActive && !session.isFinished) handleViolation(); });
+
+        function handleViolation() {
+            isAntiCheatActive = false; session.violations++; triggerSync();
+            if (session.violations >= MAX_VIOLATIONS) { session.disqualified = true; handleDisqualified(); return; }
+            session.banUntil = Date.now() + (session.violations * 3 * 60000);
+            saveSession(); checkBanStatus();
+        }
+
+        function checkBanStatus() {
+            if(session.isFinished) return;
+            if(session.banUntil > Date.now()) {
+                document.getElementById('quizView').classList.add('hidden'); document.getElementById('quizView').classList.remove('flex');
+                document.getElementById('banView').classList.remove('hidden'); document.getElementById('banView').classList.add('flex');
+                document.getElementById('violationCount').innerText = session.violations;
+                clearInterval(banInterval);
+                banInterval = setInterval(() => {
+                    let s = Math.floor((session.banUntil - Date.now()) / 1000);
+                    if (s <= 0) { clearInterval(banInterval); document.getElementById('banView').classList.add('hidden'); document.getElementById('banView').classList.remove('flex'); isAntiCheatActive = true; initQuiz(); } 
+                    else document.getElementById('banTimer').innerText = `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
+                }, 1000);
+            } else { initQuiz(); }
+        }
+
+        function showCustomAlert(msg) {
+            document.getElementById('customAlertMessage').innerText = msg;
+            document.getElementById('customAlertView').classList.remove('hidden');
+            document.getElementById('customAlertView').classList.add('flex', 'flex-col');
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('customAlertView').classList.add('hidden');
+            document.getElementById('customAlertView').classList.remove('flex', 'flex-col');
+        }
+
+        function confirmSubmit() { 
+            document.getElementById('customAlertMessage').innerText = "Yakin ingin menyelesaikan ujian? Jawaban tidak dapat diubah lagi setelah dikirim.";
+            document.getElementById('customAlertView').classList.remove('hidden');
+            document.getElementById('customAlertView').classList.add('flex', 'flex-col');
+            document.getElementById('customAlertView').querySelector('button').onclick = () => {
+                closeCustomAlert(); finishExam();
+            };
+        }
+        
+        function handleTimeUp() {
+            document.getElementById('customAlertMessage').innerText = "Waktu Ujian Telah Habis! Jawaban Anda sedang dikirim otomatis.";
+            document.getElementById('customAlertView').classList.remove('hidden');
+            document.getElementById('customAlertView').classList.add('flex', 'flex-col');
+            document.getElementById('customAlertView').querySelector('button').onclick = () => {
+                closeCustomAlert(); finishExam();
+            };
+        }
+
+        function handleDisqualified() {
+            document.getElementById('customAlertMessage').innerText = "Anda didiskualifikasi akibat melakukan pelanggaran (Membuka Tab Baru/Minimize) melebihi batas maksimal (5 kali).";
+            document.getElementById('customAlertView').classList.remove('hidden');
+            document.getElementById('customAlertView').classList.add('flex', 'flex-col');
+            document.getElementById('customAlertView').querySelector('button').onclick = () => {
+                closeCustomAlert(); finishExam();
+            };
+        }
+        
+        function finishExam() {
+            isAntiCheatActive = false; session.isFinished = true; saveSession();
+            document.getElementById('quizView').classList.add('hidden'); document.getElementById('quizView').classList.remove('flex');
+            document.getElementById('finishView').classList.remove('hidden');
+            performSync(); 
+            setTimeout(() => { finishScreen("Jawaban Terekam Sempurna."); }, 2000);
+        }
+
+        function finishScreen(msg) {
+            document.getElementById('quizView').classList.add('hidden'); document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('finishView').classList.remove('hidden');
+            document.getElementById('loadingSpinner').classList.add('hidden');
+            document.getElementById('finishMessage').innerHTML = `<span class="text-primary-600 font-extrabold text-lg block">${msg}</span>Silakan tinggalkan ruangan.`;
+        }
+    </script>
+</body>
+</html>
